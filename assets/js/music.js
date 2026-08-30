@@ -1,10 +1,12 @@
 /* ============================================================
-   个人网站 · 碟片音乐播放器（博客页右下角）
+   个人网站 · 碟片音乐播放器（全站右下角）
 
    ✏️ 怎么换成自己喜欢的歌：
    1. 把 mp3 / wav / ogg 文件放进 assets/music/ 文件夹
    2. 修改下面的 playlist：标题、歌手、文件名一一对应
    3. 保存刷新即可，播放器会自动按列表顺序循环播放
+
+   想在某一页关掉播放器：删掉那一页里的 music.js 引用即可
    ============================================================ */
 
 const MUSIC_CONFIG = {
@@ -20,6 +22,13 @@ const MUSIC_CONFIG = {
 (function initMusicPlayer() {
   if (!MUSIC_CONFIG.playlist.length) return;
 
+  // 相对路径统一解析到站点根目录，保证在 posts/ 等子目录页面也能播放
+  const MUSIC_ROOT = (document.currentScript && document.currentScript.src)
+    ? new URL('../../', document.currentScript.src)
+    : new URL('./', location.href);
+  const resolveSrc = (src) =>
+    (/^(https?:|data:|\/)/.test(src) ? src : new URL(src, MUSIC_ROOT).href);
+
   const player = document.createElement('div');
   player.className = 'music-player';
   player.setAttribute('aria-label', '背景音乐播放器');
@@ -33,7 +42,20 @@ const MUSIC_CONFIG = {
   disc.setAttribute('aria-label', '播放音乐');
   disc.innerHTML = '<span class="music-vinyl"></span>';
 
-  player.append(panel, disc);
+  // 播放时飘出的音符与悬停提示
+  const note1 = document.createElement('span');
+  note1.className = 'music-note';
+  note1.textContent = '♪';
+  note1.setAttribute('aria-hidden', 'true');
+  const note2 = document.createElement('span');
+  note2.className = 'music-note';
+  note2.textContent = '♫';
+  note2.setAttribute('aria-hidden', 'true');
+  const hint = document.createElement('span');
+  hint.className = 'music-hint';
+  hint.textContent = '♪ 听点音乐';
+
+  player.append(panel, note1, note2, hint, disc);
   document.body.appendChild(player);
 
   /* ---------- 面板结构 ---------- */
@@ -109,7 +131,7 @@ const MUSIC_CONFIG = {
   function play(index) {
     current = (index + list.length) % list.length;
     const t = list[current];
-    audio.src = t.src;
+    audio.src = resolveSrc(t.src);
     audio.play().catch(() => {
       // 文件缺失或格式不支持时给出提示
       titleEl.textContent = `${t.title}（加载失败）`;
