@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="星尘的作品集——软件项目、设计与实验。">
+  <title>作品集 · 星尘</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='26' fill='%232997ff'/%3E%3Cellipse cx='50' cy='53' rx='44' ry='11' fill='none' stroke='%23f5f5f7' stroke-width='5' opacity='.9' transform='rotate(-18 50 53)'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+
+  <canvas id="stars" aria-hidden="true"></canvas>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="./index.html">
+        <svg width="18" height="18" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+          <circle cx="50" cy="50" r="26" fill="#2997ff"/>
+          <ellipse cx="50" cy="53" rx="44" ry="11" stroke="#f5f5f7" stroke-width="5" opacity=".85" transform="rotate(-18 50 53)"/>
+        </svg>
+        星尘
+      </a>
+      <button class="nav-toggle" aria-label="打开菜单">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav-links">
+        <a href="./index.html">首页</a>
+        <a href="./works.html" class="active">作品</a>
+        <a href="./blog.html">博客</a>
+        <a href="./resume.html">简历</a>
+        <a href="https://github.com/yourname" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container page-hero">
+      <p class="section-eyebrow">Portfolio</p>
+      <h1>作品集</h1>
+      <p>我做过的一些东西——有大有小，有成有败，但都让我学到很多。</p>
+    </div>
+
+    <section style="padding-top:30px">
+      <div class="container">
+        <div class="works-grid grid-2">
+          <!-- ✏️ 替换成你的真实项目。想给作品加链接：把 <article> 改为 <a href="项目地址">，并保留 class -->
+          <article class="card work-card reveal">
+            <div class="work-cover cover-1"><span aria-hidden="true">🛰️</span></div>
+            <div class="work-body">
+              <h3>Orbit · 个人博客框架</h3>
+              <p>为写作者打造的极简博客系统，支持 Markdown 与一键主题切换，自带暗色模式。</p>
+              <div class="tags"><span>JavaScript</span><span>Node.js</span><span>2026</span></div>
+            </div>
+          </article>
+
+          <article class="card work-card reveal" style="transition-delay:.08s">
+            <div class="work-cover cover-2"><span aria-hidden="true">🪐</span></div>
+            <div class="work-body">
+              <h3>Mars Clock · 火星时钟</h3>
+              <p>把地球时间换算成火星 Sol 时间的小组件，附带火星日的日出日落提醒。</p>
+              <div class="tags"><span>Swift</span><span>Widget</span><span>2025</span></div>
+            </div>
+          </article>
+
+          <article class="card work-card reveal" style="transition-delay:.12s">
+            <div class="work-cover cover-3"><span aria-hidden="true">🌌</span></div>
+            <div class="work-body">
+              <h3>Starry · 星空摄影集</h3>
+              <p>收录我这些年拍下的夜空与银河，每张照片都配了手写的拍摄故事。</p>
+              <div class="tags"><span>摄影</span><span>Web</span><span>2025</span></div>
+            </div>
+          </article>
+
+          <article class="card work-card reveal" style="transition-delay:.16s">
+            <div class="work-cover cover-4"><span aria-hidden="true">🚀</span></div>
+            <div class="work-body">
+              <h3>Rocket Notes · 火箭笔记</h3>
+              <p>基于「第一性原理」学习法的知识管理工具：把问题拆到本质，再从头推导。</p>
+              <div class="tags"><span>React</span><span>TypeScript</span><span>2024</span></div>
+            </div>
+          </article>
+
+          <article class="card work-card reveal" style="transition-delay:.2s">
+            <div class="work-cover cover-5"><span aria-hidden="true">🌍</span></div>
+            <div class="work-body">
+              <h3>Terra · 习惯养成 App</h3>
+              <p>像改造行星一样改造日常：把习惯拆成 100 个小步骤，逐一「登陆」。</p>
+              <div class="tags"><span>Vue</span><span>PWA</span><span>2024</span></div>
+            </div>
+          </article>
+
+          <article class="card work-card reveal" style="transition-delay:.24s">
+            <div class="work-cover cover-6"><span aria-hidden="true">✨</span></div>
+            <div class="work-body">
+              <h3>星图 StarMap · 可视化</h3>
+              <p>用 WebGL 绘制可交互的星座与深空天体，支持按日期还原头顶的星空。</p>
+              <div class="tags"><span>WebGL</span><span>Three.js</span><span>2023</span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-links">
+        <a href="./index.html">首页</a>
+        <a href="./works.html">作品</a>
+        <a href="./blog.html">博客</a>
+        <a href="./resume.html">简历</a>
+      </div>
+      <p class="footer-copy">© <span class="js-year">2026</span> 星尘 · Made on Earth, for Mars.</p>
+    </div>
+  </footer>
+
+  <script src="./assets/js/main.js"></script>
+</body>
+</html>
