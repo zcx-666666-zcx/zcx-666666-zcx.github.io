@@ -11,6 +11,7 @@ personal-website/
 ├── blog.html           博客列表
 ├── resume.html         简历（支持「打印 / 导出 PDF」）
 ├── 404.html            走丢页面（飘到外太空了）
+├── make_og_image.py    重新生成社交分享封面图的脚本
 ├── posts/              博客文章
 │   ├── _template.html  ✏️ 新文章模板（复制它来写新文章）
 │   ├── why-space.html
@@ -65,6 +66,24 @@ cd personal-website && python -m http.server 8000
 3. 刷新页面即可。
 
 > 播放器在全部页面启用。想在某一页关掉：删掉那一页里引用 `music.js` 的 `<script>` 行即可。碟片大小在 `style.css` 里搜 `--disc` 调整。
+
+## 💬 文章评论（giscus）
+
+文章页底部有基于 GitHub Discussions 的评论区（giscus）。读者用 GitHub 账号即可留言。
+
+> 首次启用前需要安装一次 giscus 应用：打开 <https://github.com/apps/giscus>，点 Install，选择 `zcx-666666-zcx.github.io` 这个仓库即可。装完评论立即生效，无需改代码。
+
+评论主题会跟随站点的亮 / 暗色模式自动切换。
+
+## 📊 访问统计（GoatCounter，可选）
+
+1. 到 <https://www.goatcounter.com> 免费注册（非商用免费），会得到一个站点代码，如 `zcx.goatcounter.com` 里的 `zcx`；
+2. 打开 `assets/js/main.js`，把最底部 `GOATCOUNTER_SITE = ''` 填成你的代码；
+3. 提交推送后，在 goatcounter 后台即可看到访问数据。
+
+## 🌗 亮 / 暗色模式
+
+导航栏右侧的 ☀️ / 🌙 按钮切换，偏好会记在浏览器里（localStorage），下次访问自动保持。星空、热力图、评论区的配色都会跟着切换。
 
 ## 📝 写新博客文章
 

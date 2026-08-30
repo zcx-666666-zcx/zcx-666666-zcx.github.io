@@ -1,15 +1,37 @@
 /* ============================================================
-   个人网站 · 交互脚本 v2
-   1. 深空背景（三层视差星空 + 流星 + 极光 + 胶片颗粒）
+   个人网站 · 交互脚本 v3
+   1. 深空背景（三层视差星空 + 流星 + 极光 + 胶片颗粒，亮暗色自适应）
    2. 自定义鼠标（圆点 + 缓动光环）
    3. 卡片聚光灯与微倾斜
    4. 滚动浮现动画
    5. 导航栏 / 技能条 / 打印 / 年份
-   6. GitHub 动态专区（读取部署时生成的 JSON 数据）
+   6. 亮暗色主题切换（记忆偏好，同步 giscus 评论主题）
+   7. GitHub 动态专区（部署时自动生成的数据）
+   8. 作品页自动化（从 GitHub 数据渲染，精选文案合并）
+   9. 访问统计（GoatCounter，填入站点代码即启用）
    ============================================================ */
 
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
+const isLightMode = () => document.documentElement.classList.contains('light-mode');
+
+const LANG_COLORS = {
+  JavaScript: '#f1e05a', TypeScript: '#3178c6', Java: '#b07219', Python: '#3572A5',
+  Vue: '#41b883', C: '#555555', 'C++': '#f34b7d', 'C#': '#178600', HTML: '#e34c26',
+  CSS: '#563d7c', Svelte: '#ff3e00', Swift: '#F05138', Go: '#00ADD8', Shell: '#89e051',
+};
+const langColor = (lang) => LANG_COLORS[lang] || '#8b949e';
+
+/* 滚动浮现动画（全局共用一个观察器，动态插入的元素也能复用） */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((e) => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+function observeReveal(el) { revealObserver.observe(el); }
 
 /* ---------- 1. 深空背景 ---------- */
 (function initBackground() {
@@ -37,18 +59,22 @@ const FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
   // 鼠标视差的缓动值
   let mouseX = 0, mouseY = 0, easeX = 0, easeY = 0;
 
+  // 亮暗两套星色（暗色亮星，亮色深蓝暗星）
+  const STAR_COLORS = {
+    dark: ['#ffffff', '#cfe2ff', '#ffe3c4', '#d9d4ff', '#aee6ff'],
+    light: ['#7d97c9', '#6a85bd', '#8f9ed0', '#5f7ab5', '#9db3dd'],
+  };
+
   // 三层景深：越近的星星越大、视差越明显
   const LAYERS = [
     { ratio: 0.5,  rMax: 0.9,  parallax: 0.012, driftMax: 0.012 },
     { ratio: 0.32, rMax: 1.4,  parallax: 0.03,  driftMax: 0.03  },
     { ratio: 0.18, rMax: 2.1,  parallax: 0.06,  driftMax: 0.055 },
   ];
-  const COLORS = ['#ffffff', '#cfe2ff', '#ffe3c4', '#d9d4ff', '#aee6ff'];
 
   function createStars() {
     const count = Math.min(260, Math.floor((W * H) / 7500));
     stars = [];
-    let start = 0;
     for (const layer of LAYERS) {
       const n = Math.floor(count * layer.ratio);
       for (let i = 0; i < n; i++) {
@@ -62,11 +88,10 @@ const FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
           phase: Math.random() * Math.PI * 2,
           drift: Math.random() * layer.driftMax + 0.008,
           parallax: layer.parallax,
-          color: COLORS[(Math.random() * COLORS.length) | 0],
+          ci: (Math.random() * STAR_COLORS.dark.length) | 0,
           sparkle: layer.rMax > 1.8 && Math.random() < 0.3,
         });
       }
-      start += n;
     }
   }
 
@@ -93,7 +118,7 @@ const FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
     });
   }
 
-  function drawStar(s, t, scroll) {
+  function drawStar(s, t, scroll, light) {
     // 鼠标 + 滚动双重视差
     const px = (easeX - W / 2) * s.parallax;
     const py = (easeY - H / 2) * s.parallax;
@@ -102,9 +127,10 @@ const FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
     if (x < 0) x += W;
     if (y < 0) y += H;
 
-    const alpha = Math.max(0.08, s.base + Math.sin(t * s.speed + s.phase) * s.amp);
+    let alpha = Math.max(0.08, s.base + Math.sin(t * s.speed + s.phase) * s.amp);
+    if (light) alpha *= 0.4;
     ctx.globalAlpha = alpha;
-    ctx.fillStyle = s.color;
+    ctx.fillStyle = (light ? STAR_COLORS.light : STAR_COLORS.dark)[s.ci];
     ctx.beginPath();
     ctx.arc(x, y, s.r, 0, Math.PI * 2);
     ctx.fill();
@@ -112,7 +138,7 @@ const FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
     // 亮星画十字光芒
     if (s.sparkle) {
       ctx.globalAlpha = alpha * 0.45;
-      ctx.strokeStyle = s.color;
+      ctx.strokeStyle = ctx.fillStyle;
       ctx.lineWidth = 0.6;
       const len = s.r * 4.5;
       ctx.beginPath();
@@ -125,11 +151,12 @@ const FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
   function draw(t) {
     ctx.clearRect(0, 0, W, H);
     const scroll = window.scrollY || 0;
+    const light = isLightMode();
     easeX += (mouseX - easeX) * 0.05;
     easeY += (mouseY - easeY) * 0.05;
 
     for (const s of stars) {
-      drawStar(s, t, scroll);
+      drawStar(s, t, scroll, light);
       s.y += s.drift;
       if (s.y > H + 2) { s.y = -2; s.x = Math.random() * W; }
     }
@@ -137,9 +164,10 @@ const FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
     // 流星：带渐隐尾迹
     for (let i = meteors.length - 1; i >= 0; i--) {
       const m = meteors[i];
+      const head = light ? '70,110,220' : '255,255,255';
       const grad = ctx.createLinearGradient(m.x, m.y, m.x + m.len * 0.7, m.y - m.len * 0.7);
-      grad.addColorStop(0, `rgba(255,255,255,${0.9 * m.life})`);
-      grad.addColorStop(1, 'rgba(255,255,255,0)');
+      grad.addColorStop(0, `rgba(${head},${0.9 * m.life})`);
+      grad.addColorStop(1, `rgba(${head},0)`);
       ctx.globalAlpha = 1;
       ctx.strokeStyle = grad;
       ctx.lineWidth = 1.6;
@@ -150,7 +178,7 @@ const FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
       ctx.stroke();
       // 亮头
       ctx.globalAlpha = m.life;
-      ctx.fillStyle = '#fff';
+      ctx.fillStyle = light ? 'rgb(70,110,220)' : '#fff';
       ctx.beginPath();
       ctx.arc(m.x, m.y, 1.6, 0, Math.PI * 2);
       ctx.fill();
@@ -170,7 +198,7 @@ const FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
     ctx.clearRect(0, 0, W, H);
     for (const s of stars) {
       ctx.globalAlpha = s.base;
-      ctx.fillStyle = s.color;
+      ctx.fillStyle = (isLightMode() ? STAR_COLORS.light : STAR_COLORS.dark)[s.ci];
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
       ctx.fill();
@@ -258,16 +286,7 @@ const FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
 /* ---------- 4. 滚动浮现动画 ---------- */
 (function initReveal() {
   const els = document.querySelectorAll('.reveal');
-  if (!els.length) return;
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        io.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-  els.forEach((el) => io.observe(el));
+  els.forEach((el) => observeReveal(el));
 })();
 
 /* ---------- 5. 导航栏：滚动加深 + 移动端菜单 ---------- */
@@ -310,17 +329,42 @@ if (printBtn) printBtn.addEventListener('click', () => window.print());
 const yearEl = document.querySelector('.js-year');
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-/* ---------- 9. GitHub 动态专区 ---------- */
+/* ---------- 9. 亮暗色主题切换 ---------- */
+(function initTheme() {
+  const root = document.documentElement;
+  const btn = document.querySelector('.theme-toggle');
+
+  // giscus 评论主题跟随站点切换
+  function syncGiscus(light) {
+    const frame = document.querySelector('iframe.giscus-frame');
+    if (!frame) return;
+    frame.contentWindow.postMessage(
+      { giscus: { type: 'set-theme', theme: light ? 'light' : 'dark' } },
+      'https://giscus.app'
+    );
+  }
+
+  function apply(light) {
+    root.classList.toggle('light-mode', light);
+    if (btn) btn.textContent = light ? '🌙' : '☀️';
+    syncGiscus(light);
+  }
+
+  const light = localStorage.getItem('site-theme') === 'light';
+  if (btn) {
+    btn.textContent = light ? '🌙' : '☀️';
+    btn.addEventListener('click', () => {
+      const next = !root.classList.contains('light-mode');
+      try { localStorage.setItem('site-theme', next ? 'light' : 'dark'); } catch (e) {}
+      apply(next);
+    });
+  }
+})();
+
+/* ---------- 10. GitHub 动态专区 ---------- */
 (function initGitHub() {
   const section = document.getElementById('github');
   if (!section) return;
-
-  const LANG_COLORS = {
-    JavaScript: '#f1e05a', TypeScript: '#3178c6', Java: '#b07219', Python: '#3572A5',
-    Vue: '#41b883', C: '#555555', 'C++': '#f34b7d', 'C#': '#178600', HTML: '#e34c26',
-    CSS: '#563d7c', Svelte: '#ff3e00', Swift: '#F05138', Go: '#00ADD8', Shell: '#89e051',
-  };
-  const langColor = (lang) => LANG_COLORS[lang] || '#8b949e';
 
   async function load() {
     const results = await Promise.allSettled([
@@ -335,34 +379,11 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     };
   }
 
-  // 把贡献日历渲染成热力图（GitHub 同款 7 行列式网格）
-  function renderCalendar(container, collection) {
-    const weeks = collection.contributionCalendar.weeks;
-    const frag = document.createDocumentFragment();
-    weeks.forEach((week) => {
-      const byWeekday = {};
-      week.contributionDays.forEach((d) => { if (d.date) byWeekday[d.weekday] = d; });
-      for (let wd = 0; wd < 7; wd++) {
-        const cell = document.createElement('i');
-        const day = byWeekday[wd];
-        if (day) {
-          const count = day.contributionCount;
-          cell.className = 'gh-cell' + (count > 0 ? levelClass(count, collection) : '');
-          cell.title = `${day.date}：${count} 次贡献`;
-        }
-        frag.appendChild(cell);
-      }
-    });
-    container.innerHTML = '';
-    container.appendChild(frag);
-  }
-
   let thresholds = [1, 3, 6, 10];
-  function levelClass(count, collection) {
-    const t = thresholds;
-    if (count <= t[0]) return ' lv1';
-    if (count <= t[1]) return ' lv2';
-    if (count <= t[2]) return ' lv3';
+  function levelClass(count) {
+    if (count <= thresholds[0]) return ' lv1';
+    if (count <= thresholds[1]) return ' lv2';
+    if (count <= thresholds[2]) return ' lv3';
     return ' lv4';
   }
   function computeThresholds(collection) {
@@ -376,9 +397,30 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     thresholds = [q(0.25), q(0.5), q(0.75), Infinity];
   }
 
+  // 把贡献日历渲染成热力图（GitHub 同款 7 行列式网格）
+  function renderCalendar(container, collection) {
+    const weeks = collection.contributionCalendar.weeks;
+    const frag = document.createDocumentFragment();
+    weeks.forEach((week) => {
+      const byWeekday = {};
+      week.contributionDays.forEach((d) => { if (d.date) byWeekday[d.weekday] = d; });
+      for (let wd = 0; wd < 7; wd++) {
+        const cell = document.createElement('i');
+        const day = byWeekday[wd];
+        if (day) {
+          const count = day.contributionCount;
+          cell.className = 'gh-cell' + (count > 0 ? levelClass(count) : '');
+          cell.title = `${day.date}：${count} 次贡献`;
+        }
+        frag.appendChild(cell);
+      }
+    });
+    container.innerHTML = '';
+    container.appendChild(frag);
+  }
+
   function renderRepos(container, repos) {
     const sorted = [...repos]
-      .filter((r) => !r.fork || true) // fork 也展示，但排后面
       .sort((a, b) => (b.stargazers_count - a.stargazers_count) || (new Date(b.pushed_at) - new Date(a.pushed_at)))
       .slice(0, 6);
     container.innerHTML = '';
@@ -410,13 +452,11 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     }
 
     // 统计数字
-    if (profile) {
-      const set = (sel, val) => { const el = section.querySelector(sel); if (el) el.textContent = val; };
-      if (contributions) set('.js-gh-contrib', contributions.totalContributions.toLocaleString());
-      set('.js-gh-repos', profile.public_repos);
-      set('.js-gh-followers', profile.followers);
-      if (repos) set('.js-gh-stars', repos.reduce((s, r) => s + r.stargazers_count, 0));
-    }
+    const set = (sel, val) => { const el = section.querySelector(sel); if (el) el.textContent = val; };
+    if (contributions) set('.js-gh-contrib', contributions.totalContributions.toLocaleString());
+    if (profile) set('.js-gh-repos', profile.public_repos);
+    if (profile) set('.js-gh-followers', profile.followers);
+    if (repos) set('.js-gh-stars', repos.reduce((s, r) => s + r.stargazers_count, 0));
 
     // 热力图
     if (contributions) {
@@ -434,19 +474,76 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
       const grid = section.querySelector('.js-gh-repos-grid');
       if (grid) {
         renderRepos(grid, repos);
-        grid.querySelectorAll('.reveal').forEach((el) => io2.observe(el));
+        grid.querySelectorAll('.reveal').forEach((el) => observeReveal(el));
       }
     }
     section.querySelectorAll('.gh-loading').forEach((el) => el.remove());
   });
-
-  // 复用滚动浮现动画观察动态插入的仓库卡片
-  const io2 = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        io2.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 })();
+
+/* ---------- 11. 作品页自动化：从 GitHub 数据渲染 ---------- */
+(function initWorksPage() {
+  const grid = document.querySelector('.js-works-grid');
+  if (!grid) return;
+
+  // 精选文案：仓库名 → 封面与描述（新仓库没匹配到时自动生成兜底文案）
+  const CURATED = {
+    'WALL-E': { emoji: '🤖', cover: 'cover-1', desc: '智能适老陪伴机器人的项目代码：AI 语音交互、视频通话与环境监测，获中国大学生计算机设计大赛河南省级赛二等奖。' },
+    'learning_helper': { emoji: '📚', cover: 'cover-5', desc: '智能学习助手的后端服务，从接口设计到业务逻辑的完整实现，探索 AI 辅助学习。' },
+    'chuanzhibei': { emoji: '🏆', cover: 'cover-3', desc: '第八届传智杯全国总决赛二等奖作品，从 idea 到提交的完整实战经历。' },
+    'videodna_demo': { emoji: '🎬', cover: 'cover-4', desc: '基于阿里云能力的视频 DNA 检测与智能标签示例，感受云端 AI 服务的调用流程。' },
+    'ZZULI.dev': { emoji: '🎓', cover: 'cover-6', desc: '收集 ZZULI 开发者校友信息的开源计划，看看大家都在做什么。我参与其中。' },
+    'social-auto-upload': { emoji: '📡', cover: 'cover-2', desc: '一键把视频图文分发到抖音、小红书、B 站、YouTube 等平台的自动化工具。' },
+  };
+  const COVERS = ['cover-1', 'cover-2', 'cover-3', 'cover-4', 'cover-5', 'cover-6'];
+  const EMOJIS = ['✨', '🛠️', '📦', '🔧', '🌐', '🧪'];
+
+  fetch('assets/data/github-repos.json')
+    .then((r) => r.json())
+    .then((repos) => {
+      if (!Array.isArray(repos) || !repos.length) return;
+      const sorted = [...repos]
+        .filter((r) => r.name !== 'zcx-666666-zcx.github.io')   // 本站自己的部署仓库不上作品集
+        .sort((a, b) => (b.stargazers_count - a.stargazers_count) || (new Date(b.pushed_at) - new Date(a.pushed_at)));
+      if (!sorted.length) return;
+
+      grid.innerHTML = '';
+      sorted.forEach((repo, i) => {
+        const cur = CURATED[repo.name] || {};
+        const a = document.createElement('a');
+        a.className = 'card work-card reveal';
+        a.href = repo.html_url;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.style.transitionDelay = `${(i % 6) * 0.06}s`;
+        const emoji = cur.emoji || EMOJIS[i % EMOJIS.length];
+        const cover = cur.cover || COVERS[i % COVERS.length];
+        const desc = cur.desc || repo.description || '这个仓库还没有简介，欢迎去 GitHub 看看代码。';
+        a.innerHTML = `
+          <div class="work-cover ${cover}"><span aria-hidden="true">${emoji}</span></div>
+          <div class="work-body">
+            <h3>${repo.name}${repo.fork ? ' <span class="fork-badge">开源共建</span>' : ''}</h3>
+            <p>${desc}</p>
+            <div class="work-meta">
+              ${repo.language ? `<span><i class="lang-dot" style="background:${langColor(repo.language)}"></i> ${repo.language}</span>` : ''}
+              ${repo.stargazers_count ? `<span class="work-star">⭐ ${repo.stargazers_count}</span>` : ''}
+            </div>
+          </div>`;
+        grid.appendChild(a);
+      });
+      grid.querySelectorAll('.reveal').forEach((el) => observeReveal(el));
+    })
+    .catch(() => { /* 拉取失败时保留页面里的静态卡片 */ });
+})();
+
+/* ---------- 12. 访问统计（GoatCounter） ----------
+   ✏️ 到 https://www.goatcounter.com 免费注册后，
+   把分配的站点代码填到下面（例如 'zcx' 代表 zcx.goatcounter.com），保存即生效。 */
+const GOATCOUNTER_SITE = '';
+if (GOATCOUNTER_SITE) {
+  const gc = document.createElement('script');
+  gc.async = true;
+  gc.setAttribute('data-goatcounter', `https://${GOATCOUNTER_SITE}.goatcounter.com/count`);
+  gc.src = 'https://gc.zgo.at/count.js';
+  document.body.appendChild(gc);
+}

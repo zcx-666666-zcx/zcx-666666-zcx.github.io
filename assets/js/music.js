@@ -112,7 +112,25 @@ const MUSIC_CONFIG = {
   /* ---------- 播放逻辑 ---------- */
   const audio = new Audio();
   audio.preload = 'none';
-  let current = 0;
+
+  // 记忆播放状态：刷新后回到上次的歌与进度（不自动播放，等用户点击）
+  const STORE_KEY = 'music-player-state';
+  function saveState(extra = {}) {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify({
+        track: current,
+        time: audio.src ? (audio.currentTime || 0) : 0,
+        savedAt: Date.now(),
+        ...extra,
+      }));
+    } catch (e) { /* 隐私模式等场景下静默失败 */ }
+  }
+  let restore = null;
+  try { restore = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {}
+  let current = (restore && Number.isInteger(restore.track)
+    && restore.track >= 0 && restore.track < list.length) ? restore.track : 0;
+  let pendingSeek = 0;   // 下一次曲目加载完成后要跳转到的进度
+  let lastSaveAt = 0;
 
   function fmt(sec) {
     if (!isFinite(sec)) return '0:00';
@@ -128,9 +146,10 @@ const MUSIC_CONFIG = {
     list.forEach((item) => item.el.classList.toggle('active', item.index === current));
   }
 
-  function play(index) {
+  function play(index, seek = 0) {
     current = (index + list.length) % list.length;
     const t = list[current];
+    pendingSeek = seek;
     audio.src = resolveSrc(t.src);
     audio.play().catch(() => {
       // 文件缺失或格式不支持时给出提示
@@ -138,11 +157,15 @@ const MUSIC_CONFIG = {
       artistEl.textContent = '检查 assets/music/ 里的文件名是否对应';
     });
     reflectTrack();
+    saveState({ time: 0 });
   }
 
   function toggle() {
     if (!audio.src) {
-      play(0);
+      // 首次播放：恢复上次听到的歌与进度
+      const savedTime = (restore && restore.track === current) ? (restore.time || 0) : 0;
+      restore = null;
+      play(current, savedTime);
       return;
     }
     if (audio.paused) {
@@ -159,18 +182,28 @@ const MUSIC_CONFIG = {
   audio.addEventListener('pause', () => {
     player.classList.remove('playing');
     toggleBtn.textContent = '▶';
+    saveState();
   });
   audio.addEventListener('ended', () => play(current + 1));
   audio.addEventListener('timeupdate', () => {
     if (audio.duration) fillEl.style.width = `${(audio.currentTime / audio.duration) * 100}%`;
     curEl.textContent = fmt(audio.currentTime);
+    const now = Date.now();
+    if (now - lastSaveAt > 2000) { lastSaveAt = now; saveState(); }
   });
-  audio.addEventListener('loadedmetadata', () => { totalEl.textContent = fmt(audio.duration); });
+  audio.addEventListener('loadedmetadata', () => {
+    totalEl.textContent = fmt(audio.duration);
+    // 跳回上次的进度（临近结尾则不跳）
+    if (pendingSeek > 0 && pendingSeek < audio.duration - 3) {
+      audio.currentTime = pendingSeek;
+    }
+    pendingSeek = 0;
+  });
 
   /* ---------- 交互 ---------- */
   function openPanel() {
     player.classList.add('open');
-    if (MUSIC_CONFIG.autoplay && !audio.src) play(0);
+    if (MUSIC_CONFIG.autoplay && !audio.src) toggle();
   }
   disc.addEventListener('click', () => {
     if (!player.classList.contains('open')) {
