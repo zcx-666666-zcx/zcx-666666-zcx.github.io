@@ -6,18 +6,23 @@
 
 ```
 personal-website/
-├── index.html          首页（英雄区 / 关于我 / 马斯克语录 / 精选作品 / 最新文章）
-├── works.html          作品集
-├── blog.html           博客列表
+├── index.html          首页（英雄区 / 关于我 / GitHub 动态 / 精选作品 / 最新文章）
+├── works.html          作品集（GitHub 真实项目）
+├── blog.html           博客列表（右下角有碟片音乐播放器 🎵）
 ├── resume.html         简历（支持「打印 / 导出 PDF」）
+├── 404.html            走丢页面（飘到外太空了）
 ├── posts/              博客文章
 │   ├── _template.html  ✏️ 新文章模板（复制它来写新文章）
 │   ├── why-space.html
 │   ├── learn-from-musk.html
 │   └── apple-design.html
-└── assets/
-    ├── css/style.css   全部样式（设计系统，带中文注释）
-    └── js/main.js      星空背景、滚动动画、移动端菜单
+├── assets/
+│   ├── css/style.css   全部样式（液态玻璃设计系统，带中文注释）
+│   ├── js/main.js      星空背景、自定义鼠标、GitHub 数据渲染
+│   ├── js/music.js     ✏️ 碟片音乐播放器（顶部播放列表可以换成你的歌）
+│   ├── music/          音乐文件（目前是 3 首内置示例曲，可直接替换）
+│   └── data/           GitHub 动态数据（本地为示例，部署时自动生成真实数据）
+└── generate_assets.py  重新生成示例音轨与示例数据的脚本
 ```
 
 ## 👀 本地预览
@@ -48,6 +53,18 @@ cd personal-website && python -m http.server 8000
 | 作品项目 | `works.html`（6 张卡片）和 `index.html`（精选 3 张） |
 | 简历内容 | `resume.html`（经历/项目/技能/教育全部是示例） |
 | 技能条长度 | `resume.html` 里每个 `.skill` 的 `--w: 92%` |
+
+## 🎵 换成自己喜欢的音乐
+
+博客页右下角有一台「小唱机」：点碟片开始播放，再点一下暂停，面板里可以切歌。
+
+想换成自己的歌：
+
+1. 把 `mp3` / `wav` / `ogg` 文件放进 `assets/music/`；
+2. 打开 `assets/js/music.js`，把顶部 `playlist` 里的标题和文件名改成你的；
+3. 刷新页面即可。
+
+> 播放器目前只在博客页启用。想全站都放的话，在页面 `</body>` 前加一行 `<script src="./assets/js/music.js"></script>` 就行（`posts/` 里的文章要用 `../assets/js/music.js`）。
 
 ## 📝 写新博客文章
 
