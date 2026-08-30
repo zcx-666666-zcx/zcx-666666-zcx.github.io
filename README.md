@@ -12,6 +12,7 @@ personal-website/
 ├── resume.html         简历（支持「打印 / 导出 PDF」）
 ├── 404.html            走丢页面（飘到外太空了）
 ├── make_og_image.py    重新生成社交分享封面图的脚本
+├── make_site_stats.py  本地统计博客字数（部署时工作流自动执行同款逻辑）
 ├── posts/              博客文章
 │   ├── _template.html  ✏️ 新文章模板（复制它来写新文章）
 │   ├── why-space.html

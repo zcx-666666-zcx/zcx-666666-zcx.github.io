@@ -352,7 +352,8 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     syncGiscus(light);
   }
 
-  const light = localStorage.getItem('site-theme') === 'light';
+  let light = false;
+  try { light = localStorage.getItem('site-theme') === 'light'; } catch (e) {}
   if (btn) {
     btn.addEventListener('click', () => {
       const next = !root.classList.contains('light-mode');
@@ -662,5 +663,6 @@ function daysSinceLaunch() {
   }, 8000);
 })();
 
-/* 首次渲染图标 */
+/* 首次渲染图标；若 lucide 脚本晚到，在窗口加载完成后再补刷一次 */
 refreshIcons();
+window.addEventListener('load', refreshIcons);
