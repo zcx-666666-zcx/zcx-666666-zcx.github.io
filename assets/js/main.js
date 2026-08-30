@@ -12,6 +12,9 @@
    ============================================================ */
 
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* Lucide 图标：动态插入内容后调用一次即可把 <i data-lucide> 渲染成 SVG */
+function refreshIcons() { if (window.lucide) window.lucide.createIcons(); }
 const FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
 const isLightMode = () => document.documentElement.classList.contains('light-mode');
 
@@ -346,13 +349,11 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   function apply(light) {
     root.classList.toggle('light-mode', light);
-    if (btn) btn.textContent = light ? '🌙' : '☀️';
     syncGiscus(light);
   }
 
   const light = localStorage.getItem('site-theme') === 'light';
   if (btn) {
-    btn.textContent = light ? '🌙' : '☀️';
     btn.addEventListener('click', () => {
       const next = !root.classList.contains('light-mode');
       try { localStorage.setItem('site-theme', next ? 'light' : 'dark'); } catch (e) {}
@@ -475,6 +476,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
       if (grid) {
         renderRepos(grid, repos);
         grid.querySelectorAll('.reveal').forEach((el) => observeReveal(el));
+        refreshIcons();
       }
     }
     section.querySelectorAll('.gh-loading').forEach((el) => el.remove());
@@ -488,15 +490,15 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   // 精选文案：仓库名 → 封面与描述（新仓库没匹配到时自动生成兜底文案）
   const CURATED = {
-    'WALL-E': { emoji: '🤖', cover: 'cover-1', desc: '智能适老陪伴机器人的项目代码：AI 语音交互、视频通话与环境监测，获中国大学生计算机设计大赛河南省级赛二等奖。' },
-    'learning_helper': { emoji: '📚', cover: 'cover-5', desc: '智能学习助手的后端服务，从接口设计到业务逻辑的完整实现，探索 AI 辅助学习。' },
-    'chuanzhibei': { emoji: '🏆', cover: 'cover-3', desc: '第八届传智杯全国总决赛二等奖作品，从 idea 到提交的完整实战经历。' },
-    'videodna_demo': { emoji: '🎬', cover: 'cover-4', desc: '基于阿里云能力的视频 DNA 检测与智能标签示例，感受云端 AI 服务的调用流程。' },
-    'ZZULI.dev': { emoji: '🎓', cover: 'cover-6', desc: '收集 ZZULI 开发者校友信息的开源计划，看看大家都在做什么。我参与其中。' },
-    'social-auto-upload': { emoji: '📡', cover: 'cover-2', desc: '一键把视频图文分发到抖音、小红书、B 站、YouTube 等平台的自动化工具。' },
+    'WALL-E': { icon: 'bot', cover: 'cover-1', desc: '智能适老陪伴机器人的项目代码：AI 语音交互、视频通话与环境监测，获中国大学生计算机设计大赛河南省级赛二等奖。' },
+    'learning_helper': { icon: 'book-open', cover: 'cover-5', desc: '智能学习助手的后端服务，从接口设计到业务逻辑的完整实现，探索 AI 辅助学习。' },
+    'chuanzhibei': { icon: 'trophy', cover: 'cover-3', desc: '第八届传智杯全国总决赛二等奖作品，从 idea 到提交的完整实战经历。' },
+    'videodna_demo': { icon: 'clapperboard', cover: 'cover-4', desc: '基于阿里云能力的视频 DNA 检测与智能标签示例，感受云端 AI 服务的调用流程。' },
+    'ZZULI.dev': { icon: 'graduation-cap', cover: 'cover-6', desc: '收集 ZZULI 开发者校友信息的开源计划，看看大家都在做什么。我参与其中。' },
+    'social-auto-upload': { icon: 'satellite-dish', cover: 'cover-2', desc: '一键把视频图文分发到抖音、小红书、B 站、YouTube 等平台的自动化工具。' },
   };
   const COVERS = ['cover-1', 'cover-2', 'cover-3', 'cover-4', 'cover-5', 'cover-6'];
-  const EMOJIS = ['✨', '🛠️', '📦', '🔧', '🌐', '🧪'];
+  const FALLBACK_ICONS = ['sparkles', 'wrench', 'package', 'globe', 'terminal', 'flask-conical'];
 
   fetch('assets/data/github-repos.json')
     .then((r) => r.json())
@@ -516,11 +518,11 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
         a.target = '_blank';
         a.rel = 'noopener';
         a.style.transitionDelay = `${(i % 6) * 0.06}s`;
-        const emoji = cur.emoji || EMOJIS[i % EMOJIS.length];
+        const icon = cur.icon || FALLBACK_ICONS[i % FALLBACK_ICONS.length];
         const cover = cur.cover || COVERS[i % COVERS.length];
         const desc = cur.desc || repo.description || '这个仓库还没有简介，欢迎去 GitHub 看看代码。';
         a.innerHTML = `
-          <div class="work-cover ${cover}"><span aria-hidden="true">${emoji}</span></div>
+          <div class="work-cover ${cover}"><i data-lucide="${icon}" aria-hidden="true"></i></div>
           <div class="work-body">
             <h3>${repo.name}${repo.fork ? ' <span class="fork-badge">开源共建</span>' : ''}</h3>
             <p>${desc}</p>
@@ -532,6 +534,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
         grid.appendChild(a);
       });
       grid.querySelectorAll('.reveal').forEach((el) => observeReveal(el));
+      refreshIcons();
     })
     .catch(() => { /* 拉取失败时保留页面里的静态卡片 */ });
 })();
@@ -658,3 +661,6 @@ function daysSinceLaunch() {
     if (target && !/\d/.test(target.textContent)) hideBusuanzi();
   }, 8000);
 })();
+
+/* 首次渲染图标 */
+refreshIcons();

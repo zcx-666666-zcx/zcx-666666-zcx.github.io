@@ -79,6 +79,14 @@ cd personal-website && python -m http.server 8000
 
 文章页顶部的「X 字 · 约 Y 分钟」按 400 字 / 分钟自动估算，想调速度改 `main.js` 里的 `READ_SPEED`。
 
+## 🎨 图标（Lucide）
+
+全站图标来自开源的 [Lucide](https://lucide.dev)（ISC 许可，可免费商用），通过 jsDelivr CDN 引入，无构建步骤。
+
+- 想换 / 加图标：写 `<i data-lucide="图标名"></i>`，图标名在 [lucide.dev/icons](https://lucide.dev/icons) 查；
+- 动态插入的内容（播放器、作品卡等）渲染后调用一次 `refreshIcons()`（定义在 `main.js`）；
+- CDN 加载失败时图标不显示，但功能按钮都带文字标签，不影响使用。
+
 ## 💬 文章评论（giscus）
 
 文章页底部有基于 GitHub Discussions 的评论区（giscus）。读者用 GitHub 账号即可留言。

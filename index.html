@@ -33,7 +33,7 @@
         张晨曦
       </a>
       <div class="nav-actions">
-        <button class="theme-toggle" type="button" aria-label="切换亮 / 暗色模式">☀️</button>
+        <button class="theme-toggle" type="button" aria-label="切换亮 / 暗色模式"><i data-lucide="sun" class="icon-sun"></i><i data-lucide="moon" class="icon-moon"></i><span class="toggle-label">主题</span></button>
         <button class="nav-toggle" aria-label="打开菜单">
           <span></span><span></span><span></span>
         </button>
@@ -53,9 +53,9 @@
     <section class="hero">
       <div>
         <div class="hero-badges reveal">
-          <span>🛠️ 在造东西</span>
-          <span>🪐 仰望星空</span>
-          <span>🍎 极简主义</span>
+          <span><i data-lucide="hammer"></i>在造东西</span>
+          <span><i data-lucide="telescope"></i>仰望星空</span>
+          <span><i data-lucide="gem"></i>极简主义</span>
         </div>
         <p class="hero-eyebrow reveal" style="transition-delay:.06s">作品集 · 博客 · 简历</p>
         <h1 class="reveal" style="transition-delay:.12s">
@@ -99,12 +99,12 @@
               用最简洁的方式，展示我做过的东西、写下的想法，和我走过的路。
             </p>
             <ul class="chips">
-              <li>🚀 太空</li>
-              <li>🤖 机器人</li>
-              <li>💻 编程</li>
-              <li>🍎 极简设计</li>
-              <li>📖 阅读</li>
-              <li>☕ 咖啡</li>
+              <li><i data-lucide="rocket"></i>太空</li>
+              <li><i data-lucide="bot"></i>机器人</li>
+              <li><i data-lucide="code"></i>编程</li>
+              <li><i data-lucide="apple"></i>极简设计</li>
+              <li><i data-lucide="book-open"></i>阅读</li>
+              <li><i data-lucide="coffee"></i>咖啡</li>
             </ul>
           </div>
         </div>
@@ -168,7 +168,7 @@
         </div>
         <div class="works-grid">
           <a class="card work-card reveal" href="https://github.com/zcx-666666-zcx/WALL-E" target="_blank" rel="noopener">
-            <div class="work-cover cover-1"><span aria-hidden="true">🤖</span></div>
+            <div class="work-cover cover-1"><i data-lucide="bot" aria-hidden="true"></i></div>
             <div class="work-body">
               <h3>WALL-E · 智能陪伴机器人</h3>
               <p>智能适老陪伴机器人项目代码，获中国大学生计算机设计大赛河南省级赛二等奖。</p>
@@ -176,7 +176,7 @@
             </div>
           </a>
           <a class="card work-card reveal" style="transition-delay:.1s" href="https://github.com/zcx-666666-zcx/learning_helper" target="_blank" rel="noopener">
-            <div class="work-cover cover-5"><span aria-hidden="true">📚</span></div>
+            <div class="work-cover cover-5"><i data-lucide="book-open" aria-hidden="true"></i></div>
             <div class="work-body">
               <h3>智能学习助手 · 后端</h3>
               <p>智能学习助手的后端服务，探索 AI 辅助学习的可能性。</p>
@@ -184,7 +184,7 @@
             </div>
           </a>
           <a class="card work-card reveal" style="transition-delay:.2s" href="https://github.com/zcx-666666-zcx/chuanzhibei" target="_blank" rel="noopener">
-            <div class="work-cover cover-3"><span aria-hidden="true">🏆</span></div>
+            <div class="work-cover cover-3"><i data-lucide="trophy" aria-hidden="true"></i></div>
             <div class="work-body">
               <h3>传智杯 · 微信小程序</h3>
               <p>传智杯全国总决赛二等奖作品，从 idea 到提交的完整实战。</p>
@@ -248,8 +248,8 @@
           <p>无论是合作机会、问题交流，还是聊聊星空与火星——都欢迎来找我。</p>
         </div>
         <div class="contact-actions reveal">
-          <a class="btn btn-primary" href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">在 GitHub 找到我</a>
-          <a class="btn btn-ghost" href="mailto:jimkit666666@gmail.com">给我写信</a>
+          <a class="btn btn-primary" href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener"><i data-lucide="github"></i>在 GitHub 找到我</a>
+          <a class="btn btn-ghost" href="mailto:jimkit666666@gmail.com"><i data-lucide="mail"></i>给我写信</a>
         </div>
       </div>
     </section>
@@ -266,11 +266,13 @@
         <a href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">GitHub</a>
       </div>
       <p class="footer-copy">
-        © <span class="js-year">2026</span> 张晨曦 · Made on Earth, for Mars · 🚀 已运行 <span class="js-run-days">…</span> 天
+        © <span class="js-year">2026</span> 张晨曦 · Made on Earth, for Mars · <i data-lucide="rocket"></i> 已运行 <span class="js-run-days">…</span> 天
       </p>
     </div>
   </footer>
 
+    <!-- Lucide 开源图标库（https://lucide.dev，ISC 许可） -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
   <script src="./assets/js/main.js"></script>
   <!-- 碟片音乐播放器（全站可用，不想在某页显示就删掉这一行） -->
   <script src="./assets/js/music.js"></script>

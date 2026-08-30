@@ -45,24 +45,27 @@ const MUSIC_CONFIG = {
   // 播放时飘出的音符与悬停提示
   const note1 = document.createElement('span');
   note1.className = 'music-note';
-  note1.textContent = '♪';
+  note1.innerHTML = '<i data-lucide="music-2"></i>';
   note1.setAttribute('aria-hidden', 'true');
   const note2 = document.createElement('span');
   note2.className = 'music-note';
-  note2.textContent = '♫';
+  note2.innerHTML = '<i data-lucide="music-4"></i>';
   note2.setAttribute('aria-hidden', 'true');
-  const hint = document.createElement('span');
-  hint.className = 'music-hint';
-  hint.textContent = '♪ 听点音乐';
+  const label = document.createElement('button');
+  label.className = 'music-label';
+  label.type = 'button';
+  label.setAttribute('aria-label', '播放音乐');
+  label.innerHTML = '<i data-lucide="music"></i><span>音乐</span>';
 
-  player.append(panel, note1, note2, hint, disc);
+  player.append(panel, note1, note2, label, disc);
   document.body.appendChild(player);
+  if (window.lucide) window.lucide.createIcons();
 
   /* ---------- 面板结构 ---------- */
   panel.innerHTML = `
     <div class="music-panel-head">
-      <h4>♪ 随手听的</h4>
-      <button class="music-close" type="button" aria-label="收起播放器">✕</button>
+      <h4><i data-lucide="disc-3"></i>随手听的</h4>
+      <button class="music-close" type="button" aria-label="收起播放器"><i data-lucide="x"></i></button>
     </div>
     <div class="music-now">
       <span class="music-eq" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -77,9 +80,9 @@ const MUSIC_CONFIG = {
       <span class="js-music-total">0:00</span>
     </div>
     <div class="music-controls">
-      <button class="music-ctrl js-music-prev" type="button" aria-label="上一首">⏮</button>
-      <button class="music-ctrl main js-music-toggle" type="button" aria-label="播放 / 暂停">▶</button>
-      <button class="music-ctrl js-music-next" type="button" aria-label="下一首">⏭</button>
+      <button class="music-ctrl js-music-prev" type="button" aria-label="上一首"><i data-lucide="skip-back"></i></button>
+      <button class="music-ctrl main js-music-toggle" type="button" aria-label="播放 / 暂停"><i data-lucide="play" class="i-play"></i><i data-lucide="pause" class="i-pause"></i></button>
+      <button class="music-ctrl js-music-next" type="button" aria-label="下一首"><i data-lucide="skip-forward"></i></button>
     </div>
     <div class="music-list js-music-list"></div>
     <p class="music-tip">✏️ 想换成自己喜欢的歌？把音乐文件放进 <b>assets/music/</b>，再编辑 <b>assets/js/music.js</b> 顶部的播放列表。</p>
@@ -177,11 +180,9 @@ const MUSIC_CONFIG = {
 
   audio.addEventListener('play', () => {
     player.classList.add('playing');
-    toggleBtn.textContent = '⏸';
   });
   audio.addEventListener('pause', () => {
     player.classList.remove('playing');
-    toggleBtn.textContent = '▶';
     saveState();
   });
   audio.addEventListener('ended', () => play(current + 1));
@@ -214,6 +215,7 @@ const MUSIC_CONFIG = {
     }
   });
   $('.music-close').addEventListener('click', () => player.classList.remove('open'));
+  label.addEventListener('click', () => disc.click());
   toggleBtn.addEventListener('click', toggle);
   $('.js-music-prev').addEventListener('click', () => play(current - 1));
   $('.js-music-next').addEventListener('click', () => play(current + 1));
