@@ -55,29 +55,49 @@
 
     <section style="padding-top:30px">
       <div class="container">
+        <div class="site-stats js-site-stats reveal">
+          <div class="stat-item"><strong class="js-stat-posts">—</strong><span>篇文章</span></div>
+          <div class="stat-item"><strong class="js-stat-words">—</strong><span>总字数</span></div>
+          <div class="stat-item"><strong class="js-stat-days">—</strong><span>天 · 站点运行</span></div>
+          <div class="stat-item busuanzi-need"><strong id="busuanzi_value_site_pv">…</strong><span>次访问</span></div>
+          <div class="stat-item busuanzi-need"><strong id="busuanzi_value_site_uv">…</strong><span>位访客</span></div>
+        </div>
+        <div class="tag-filter js-tag-filter" aria-label="按标签筛选文章"></div>
         <div class="blog-list">
           <!-- ✏️ 新写文章后，复制一行 <a class="post-row"> 放到这里最上方 -->
-          <a class="post-row reveal" href="./posts/why-space.html">
+          <a class="post-row reveal" href="./posts/why-space.html" data-tags="随笔,星空">
             <time datetime="2026-08-30">2026.08.30</time>
             <div>
               <h3>为什么我热爱太空</h3>
               <p>从小时候的一次抬头，到决定做一个自己的网站。</p>
+              <div class="row-meta">
+                <div class="row-tags"><span>随笔</span><span>星空</span></div>
+                <span class="row-chars js-row-chars">—</span>
+              </div>
             </div>
             <span class="row-arrow">›</span>
           </a>
-          <a class="post-row reveal" style="transition-delay:.06s" href="./posts/learn-from-musk.html">
+          <a class="post-row reveal" style="transition-delay:.06s" href="./posts/learn-from-musk.html" data-tags="思维,随笔">
             <time datetime="2026-08-15">2026.08.15</time>
             <div>
               <h3>从马斯克身上学到的三件事</h3>
               <p>第一性原理、快速迭代，以及为重要的事押上一切。</p>
+              <div class="row-meta">
+                <div class="row-tags"><span>思维</span><span>随笔</span></div>
+                <span class="row-chars js-row-chars">—</span>
+              </div>
             </div>
             <span class="row-arrow">›</span>
           </a>
-          <a class="post-row reveal" style="transition-delay:.12s" href="./posts/apple-design.html">
+          <a class="post-row reveal" style="transition-delay:.12s" href="./posts/apple-design.html" data-tags="设计,随笔">
             <time datetime="2026-07-28">2026.07.28</time>
             <div>
               <h3>苹果的设计哲学教会我的事</h3>
               <p>简洁不是少，而是恰到好处；细节是尊重。</p>
+              <div class="row-meta">
+                <div class="row-tags"><span>设计</span><span>随笔</span></div>
+                <span class="row-chars js-row-chars">—</span>
+              </div>
             </div>
             <span class="row-arrow">›</span>
           </a>
@@ -95,7 +115,7 @@
         <a href="./resume.html">简历</a>
         <a href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">GitHub</a>
       </div>
-      <p class="footer-copy">© <span class="js-year">2026</span> 张晨曦 · Made on Earth, for Mars.</p>
+      <p class="footer-copy">© <span class="js-year">2026</span> 张晨曦 · Made on Earth, for Mars · 🚀 已运行 <span class="js-run-days">…</span> 天</p>
     </div>
   </footer>
 

@@ -1185,6 +1185,84 @@ section { padding: 110px 0; }
 .reveal.visible { opacity: 1; transform: none; }
 
 
+
+/* ---------- 博客统计条 / 标签筛选 / 行内信息 ---------- */
+.site-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 14px;
+  padding: 22px 18px;
+  margin-bottom: 30px;
+}
+.site-stats .stat-item { text-align: center; }
+.site-stats strong {
+  display: block;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(120deg, #8ecdff, #a7a4ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.site-stats span { font-size: 12.5px; color: var(--text-3); }
+
+.tag-filter { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+.tag-pill {
+  padding: 8px 18px;
+  border-radius: 980px;
+  font-size: 14px;
+  font-family: inherit;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.25s var(--ease-spring);
+}
+.tag-pill:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); color: var(--text); }
+.tag-pill.active {
+  background: rgba(41, 151, 255, 0.2);
+  border-color: rgba(41, 151, 255, 0.5);
+  color: #cfe8ff;
+}
+
+.row-meta { display: flex; align-items: center; gap: 14px; margin-top: 12px; flex-wrap: wrap; }
+.row-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.row-tags span {
+  font-size: 11.5px;
+  padding: 3px 12px;
+  border-radius: 980px;
+  border: 1px solid var(--hairline);
+  color: var(--text-3);
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+.row-tags span:hover { color: #7cbcff; border-color: rgba(41, 151, 255, 0.45); }
+.row-chars { font-size: 12px; color: var(--text-3); margin-left: auto; font-variant-numeric: tabular-nums; }
+
+.post-info { font-variant-numeric: tabular-nums; }
+
+html.light-mode .site-stats strong {
+  background: linear-gradient(120deg, #1a7bf0, #6a5aff);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+html.light-mode .tag-pill { background: rgba(255, 255, 255, 0.6); }
+html.light-mode .tag-pill:hover { background: rgba(255, 255, 255, 1); }
+html.light-mode .tag-pill.active {
+  background: rgba(41, 130, 255, 0.16);
+  border-color: rgba(41, 130, 255, 0.5);
+  color: #0b57c2;
+}
+html.light-mode .row-tags span:hover { color: #0b57c2; }
+
+@media (max-width: 720px) {
+  .site-stats { gap: 10px; padding: 18px 12px; }
+  .site-stats strong { font-size: 22px; }
+  .row-chars { margin-left: 0; width: 100%; }
+}
+
 /* ---------- 导航动作区（亮暗色切换） ---------- */
 .nav-actions { display: flex; align-items: center; gap: 8px; }
 .theme-toggle {

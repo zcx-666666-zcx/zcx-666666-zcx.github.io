@@ -67,6 +67,18 @@ cd personal-website && python -m http.server 8000
 
 > 播放器在全部页面启用。想在某一页关掉：删掉那一页里引用 `music.js` 的 `<script>` 行即可。碟片大小在 `style.css` 里搜 `--disc` 调整。
 
+## 📊 博客统计与标签
+
+博客页顶部有统计条：**文章数 / 总字数 / 站点运行天数 / 访问量 / 访客数**。
+
+- 文章数与总字数：每次部署时自动统计 `posts/` 里所有文章的真实字数（`make_site_stats.py` 同款逻辑），无需手动维护；
+- 运行天数：从 `assets/js/main.js` 里的 `SITE_LAUNCH`（上线日期）起算；
+- 访问量 / 访客数：由「不蒜子」免费计数服务提供，每篇文章页还会显示本页浏览量；服务偶尔不稳定，加载失败会自动隐藏数字。
+
+每篇文章可以打多个标签（在文章页 `post-meta` 和博客列表行里都能看到），博客页顶部的标签栏可以筛选；点击文章行里的小标签也能筛选。新文章记得在 `blog.html` 的行上加 `data-tags="标签1,标签2"` 和 `<div class="row-tags">`。
+
+文章页顶部的「X 字 · 约 Y 分钟」按 400 字 / 分钟自动估算，想调速度改 `main.js` 里的 `READ_SPEED`。
+
 ## 💬 文章评论（giscus）
 
 文章页底部有基于 GitHub Discussions 的评论区（giscus）。读者用 GitHub 账号即可留言。

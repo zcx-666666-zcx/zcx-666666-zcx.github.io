@@ -547,3 +547,114 @@ if (GOATCOUNTER_SITE) {
   gc.src = 'https://gc.zgo.at/count.js';
   document.body.appendChild(gc);
 }
+
+/* ---------- 13. 博客统计：运行天数 / 字数 / 阅读时长 / 标签筛选 ---------- */
+const SITE_LAUNCH = '2026-08-30';   // 🚀 网站上线日期（运行天数从这天起算）
+const READ_SPEED = 400;             // 阅读速度（中文字 / 分钟）
+
+function daysSinceLaunch() {
+  const launch = new Date(SITE_LAUNCH + 'T00:00:00');
+  return Math.max(1, Math.floor((Date.now() - launch.getTime()) / 86400000) + 1);
+}
+
+// 页脚运行天数（全站）
+(function initRunDays() {
+  document.querySelectorAll('.js-run-days').forEach((el) => { el.textContent = daysSinceLaunch(); });
+})();
+
+// 文章页：本页字数 + 预计阅读时长
+(function initPostMeta() {
+  const content = document.querySelector('.post-content');
+  if (!content) return;
+  const chars = content.textContent.replace(/\s/g, '').length;
+  const minutes = Math.max(1, Math.round(chars / READ_SPEED));
+  document.querySelectorAll('.js-post-chars').forEach((el) => { el.textContent = `${chars.toLocaleString()} 字`; });
+  document.querySelectorAll('.js-reading-time').forEach((el) => { el.textContent = `约 ${minutes} 分钟`; });
+})();
+
+// 博客页：统计条 + 标签筛选 + 列表行内字数
+(function initBlogPage() {
+  const statsBar = document.querySelector('.js-site-stats');
+  if (statsBar) {
+    const fill = (sel, v) => { const el = document.querySelector(sel); if (el) el.textContent = v; };
+    fill('.js-stat-days', daysSinceLaunch());
+    fetch('assets/data/site-stats.json')
+      .then((r) => r.json())
+      .then((s) => {
+        fill('.js-stat-posts', s.posts);
+        fill('.js-stat-words', s.totalChars.toLocaleString());
+        // 每篇文章的字数与阅读时长（数据键为站点绝对路径）
+        document.querySelectorAll('.blog-list .post-row[href]').forEach((row) => {
+          const path = new URL(row.getAttribute('href'), location.href).pathname;
+          const chars = s.perPost && s.perPost[path];
+          const el = row.querySelector('.js-row-chars');
+          if (el && chars) el.textContent = `${chars} 字 · 约 ${Math.max(1, Math.round(chars / READ_SPEED))} 分钟`;
+        });
+      })
+      .catch(() => { /* 数据缺失时保持占位 */ });
+  }
+
+  // 标签筛选：根据行的 data-tags 生成筛选按钮
+  const filterBar = document.querySelector('.js-tag-filter');
+  const rows = document.querySelectorAll('.blog-list .post-row');
+  if (!filterBar || !rows.length) return;
+  const countBy = {};
+  rows.forEach((row) => {
+    (row.dataset.tags || '').split(',').map((t) => t.trim()).filter(Boolean)
+      .forEach((t) => { countBy[t] = (countBy[t] || 0) + 1; });
+  });
+  const tags = Object.keys(countBy);
+  if (!tags.length) return;
+
+  function makePill(label, tag, count) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tag-pill' + (tag ? '' : ' active');
+    b.dataset.tag = tag;
+    b.textContent = tag ? `${label} · ${count}` : `全部 · ${rows.length}`;
+    b.addEventListener('click', () => {
+      filterBar.querySelectorAll('.tag-pill').forEach((p) => p.classList.remove('active'));
+      b.classList.add('active');
+      rows.forEach((row) => {
+        const rowTags = (row.dataset.tags || '').split(',').map((t) => t.trim());
+        row.style.display = (!tag || rowTags.includes(tag)) ? '' : 'none';
+      });
+    });
+    return b;
+  }
+
+  filterBar.appendChild(makePill('全部', '', rows.length));
+  tags.sort().forEach((t) => filterBar.appendChild(makePill(t, t, countBy[t])));
+
+  // 点击文章行内的标签小胶囊 = 按该标签筛选
+  document.querySelectorAll('.blog-list .row-tags span').forEach((span) => {
+    span.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const pill = [...filterBar.querySelectorAll('.tag-pill')].find((p) => p.dataset.tag === span.textContent);
+      if (pill) pill.click();
+      filterBar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  });
+})();
+
+/* ---------- 14. 不蒜子访问量（浏览量 / 访客数） ----------
+   与 vow0328 等博客同款的免费计数服务；加载失败时自动隐藏数字，不影响页面。 */
+(function initBusuanzi() {
+  if (!document.querySelector('.busuanzi-need')) return;
+  const bz = document.createElement('script');
+  bz.async = true;
+  bz.src = 'https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js';
+  bz.addEventListener('error', hideBusuanzi);
+  document.body.appendChild(bz);
+  function hideBusuanzi() {
+    document.querySelectorAll('.busuanzi-need').forEach((el) => { el.style.display = 'none'; });
+  }
+  // 8 秒后仍无数据则优雅隐藏
+  setTimeout(() => {
+    const pv = document.getElementById('busuanzi_value_site_pv');
+    const ppv = document.getElementById('busuanzi_value_page_pv');
+    const target = pv || ppv;
+    if (target && !/\d/.test(target.textContent)) hideBusuanzi();
+  }, 8000);
+})();
