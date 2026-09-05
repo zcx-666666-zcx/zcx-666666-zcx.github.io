@@ -12,10 +12,12 @@
 const MUSIC_CONFIG = {
   // autoplay: 打开面板时是否自动开始播放
   autoplay: true,
+  // ✏️ 歌名待定：确认后把 title / artist 改成真实信息即可，文件名不用动
   playlist: [
-    { title: '星尘咏叹', artist: '内置示例曲', src: 'assets/music/stardust-aria.wav' },
-    { title: '月面漫步', artist: '内置示例曲', src: 'assets/music/moonwalk.wav' },
-    { title: '轨道漫游', artist: '内置示例曲', src: 'assets/music/orbit-drift.wav' },
+    { title: '曲目 1', artist: '未知', src: 'assets/music/track-01.mp3' },
+    { title: '曲目 2', artist: '未知', src: 'assets/music/track-02.mp3' },
+    { title: '曲目 3', artist: '未知', src: 'assets/music/track-03.mp3' },
+    { title: '曲目 4', artist: '未知', src: 'assets/music/track-04.mp3' },
   ],
 };
 

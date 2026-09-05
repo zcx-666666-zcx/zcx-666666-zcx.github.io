@@ -14,24 +14,19 @@ personal-website/
 ├── make_og_image.py    重新生成社交分享封面图的脚本
 ├── make_site_stats.py  本地统计博客字数（部署时工作流自动执行同款逻辑）
 ├── posts/              博客文章
-│   ├── _template.html  ✏️ 新文章模板（复制它来写新文章）
-│   ├── why-space.html
-│   ├── learn-from-musk.html
-│   └── apple-design.html
+│   └── _template.html  ✏️ 新文章模板（复制它来写新文章）
 ├── assets/
 │   ├── css/style.css   全部样式（液态玻璃设计系统，带中文注释）
 │   ├── js/main.js      星空背景、自定义鼠标、GitHub 数据渲染
 │   ├── js/music.js     ✏️ 碟片音乐播放器（全站右下角，顶部播放列表可换歌）
-│   ├── music/          音乐文件（目前是 3 首内置示例曲，可直接替换）
+│   ├── music/          音乐文件（4 首，192kbps mp3，共约 14 MB）
 │   └── data/           GitHub 动态数据（本地为示例，部署时自动生成真实数据）
 └── generate_assets.py  重新生成示例音轨与示例数据的脚本
 ```
 
 ## 👀 本地预览
 
-直接双击 `index.html` 用浏览器打开即可。
-
-想用本地服务器（更像线上环境）：
+请优先使用本地服务器预览。站点的 GitHub 动态与博客统计通过 `fetch` 加载数据，直接双击 `index.html` 时，部分浏览器会阻止这些请求。
 
 ```bash
 # 方式一：有 Node.js
@@ -58,7 +53,7 @@ cd personal-website && python -m http.server 8000
 
 ## 🎵 换成自己喜欢的音乐
 
-每一页右下角都有一台「小唱机」：点碟片开始播放，再点一下暂停，悬停有提示，面板里可以切歌；播放时碟片会转、有音符飘出。
+博客和文章页右下角有一台可选的「小唱机」：点碟片开始播放，再点一下暂停，面板里可以切歌；播放时碟片会转、有音符飘出。简历、作品集等信息页面默认不显示，避免影响阅读。
 
 想换成自己的歌：
 
@@ -66,7 +61,15 @@ cd personal-website && python -m http.server 8000
 2. 打开 `assets/js/music.js`，把顶部 `playlist` 里的标题和文件名改成你的（也支持填外链）；
 3. 刷新页面即可。
 
-> 播放器在全部页面启用。想在某一页关掉：删掉那一页里引用 `music.js` 的 `<script>` 行即可。碟片大小在 `style.css` 里搜 `--disc` 调整。
+> ⚠️ **别直接往里放 FLAC / WAV 无损文件。** 一首 3 分钟的无损约 20–30 MB，访客点播放要等半天才出声。
+> 网页背景音乐用 192kbps mp3 就够（约 4 MB/首，普通耳机听不出差别）。用 ffmpeg 转：
+> ```bash
+> ffmpeg -i 输入.flac -codec:a libmp3lame -b:a 192k 输出.mp3
+> ```
+> 另外注意：有些下载来的文件扩展名是 `.mp3` 但实际是 FLAC（用 `head -c 4 文件.mp3` 看，显示 `fLaC` 就是），
+> 这种文件浏览器可能拒播，必须转码并改成正确的扩展名。
+
+> 播放器是否启用由各页面的 `music.js` 引用控制。碟片大小在 `style.css` 里搜 `--disc` 调整。
 
 ## 📊 博客统计与标签
 

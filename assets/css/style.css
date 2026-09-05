@@ -52,6 +52,10 @@ a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
 ul { list-style: none; }
 button { font-family: inherit; }
+a:focus-visible, button:focus-visible {
+  outline: 3px solid rgba(142, 205, 255, 0.9);
+  outline-offset: 4px;
+}
 
 /* ---------- 背景层：深空渐变 + 极光 + 星空画布 + 胶片颗粒 ---------- */
 
@@ -72,7 +76,7 @@ body::before {
   position: fixed;
   border-radius: 50%;
   filter: blur(90px);
-  opacity: 0.55;
+  opacity: 0.36;
   z-index: -1;
   pointer-events: none;
   will-change: transform;
@@ -81,19 +85,19 @@ body::before {
   width: 46vw; height: 46vw;
   left: -12vw; top: -16vw;
   background: radial-gradient(circle, rgba(41, 151, 255, 0.34), transparent 65%);
-  animation: aurora-drift-1 26s ease-in-out infinite alternate;
+  animation: aurora-drift-1 40s ease-in-out infinite alternate;
 }
 .aurora-2 {
   width: 40vw; height: 40vw;
   right: -14vw; top: 24vh;
   background: radial-gradient(circle, rgba(125, 122, 255, 0.26), transparent 65%);
-  animation: aurora-drift-2 32s ease-in-out infinite alternate;
+  animation: aurora-drift-2 46s ease-in-out infinite alternate;
 }
 .aurora-3 {
   width: 36vw; height: 36vw;
   left: 24vw; bottom: -20vw;
   background: radial-gradient(circle, rgba(255, 100, 130, 0.14), transparent 65%);
-  animation: aurora-drift-3 38s ease-in-out infinite alternate;
+  animation: aurora-drift-3 52s ease-in-out infinite alternate;
 }
 @keyframes aurora-drift-1 { to { transform: translate(9vw, 7vh) scale(1.15); } }
 @keyframes aurora-drift-2 { to { transform: translate(-7vw, -6vh) scale(0.9); } }
@@ -565,7 +569,7 @@ section { padding: 110px 0; }
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-top-color: rgba(120, 190, 255, 0.6);
-  animation: ring-spin 14s linear infinite;
+  animation: ring-spin 32s linear infinite;
 }
 @keyframes ring-spin { to { transform: rotate(360deg); } }
 .about-text p { color: var(--text-2); margin-bottom: 18px; font-size: 18px; }
@@ -858,6 +862,26 @@ html.light-mode .gh-legend i { background: rgba(28, 42, 88, 0.1); }
 .timeline-item ul li a { color: #7cbcff; }
 
 /* 技能条 */
+.skill-groups {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.skill-group {
+  padding: 22px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+}
+.skill-group h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+.skill-group h3 .lucide { color: var(--accent); }
+.skill-group p { color: var(--text-2); font-size: 14px; line-height: 1.75; }
 .skill { margin-bottom: 24px; }
 .skill-head {
   display: flex;
@@ -1423,6 +1447,7 @@ html.light-mode .post-content blockquote {
 }
 html.light-mode .post-meta .tag { color: #0b57c2; border-color: rgba(41, 130, 255, 0.4); background: rgba(41, 130, 255, 0.12); }
 html.light-mode .resume-title { color: #0b57c2; }
+html.light-mode .skill-group { background: rgba(255, 255, 255, 0.58); }
 html.light-mode .timeline-item .tl-role { color: #0b57c2; }
 html.light-mode .gh-stat strong {
   background: linear-gradient(120deg, #1a7bf0, #6a5aff);
@@ -1460,6 +1485,7 @@ html.light-mode .notfound-code { filter: drop-shadow(0 10px 30px rgba(70, 110, 2
   .about-grid { grid-template-columns: 1fr; gap: 48px; text-align: center; }
   .about-text p { text-align: left; }
   .chips { justify-content: center; }
+  .skill-groups { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 720px) {

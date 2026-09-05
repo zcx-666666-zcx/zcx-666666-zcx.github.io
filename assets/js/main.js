@@ -1,8 +1,7 @@
 /* ============================================================
    个人网站 · 交互脚本 v3
-   1. 深空背景（三层视差星空 + 流星 + 极光 + 胶片颗粒，亮暗色自适应）
-   2. 自定义鼠标（圆点 + 缓动光环）
-   3. 卡片聚光灯与微倾斜
+   1. 深空背景（星空 + 极光，亮暗色自适应）
+   2. 卡片聚光灯
    4. 滚动浮现动画
    5. 导航栏 / 技能条 / 打印 / 年份
    6. 亮暗色主题切换（记忆偏好，同步 giscus 评论主题）
@@ -38,7 +37,7 @@ function observeReveal(el) { revealObserver.observe(el); }
 
 /* ---------- 1. 深空背景 ---------- */
 (function initBackground() {
-  // 注入极光光斑与胶片颗粒
+  // 注入极光光斑；背景保持克制，避免抢走内容注意力。
   const auroraWrap = document.createElement('div');
   auroraWrap.setAttribute('aria-hidden', 'true');
   ['aurora-1', 'aurora-2', 'aurora-3'].forEach((cls) => {
@@ -47,10 +46,6 @@ function observeReveal(el) { revealObserver.observe(el); }
     auroraWrap.appendChild(a);
   });
   document.body.prepend(auroraWrap);
-  const grain = document.createElement('div');
-  grain.className = 'grain';
-  grain.setAttribute('aria-hidden', 'true');
-  document.body.prepend(grain);
 
   const canvas = document.getElementById('stars');
   if (!canvas) return;
@@ -218,7 +213,7 @@ function observeReveal(el) { revealObserver.observe(el); }
   resize();
   if (!REDUCED_MOTION) {
     requestAnimationFrame(draw);
-    // 同时最多两颗流星，避免画面过闹
+    // 偶发流星为深空主题保留一点动态感。
     setInterval(() => {
       if (!document.hidden && meteors.length < 2 && Math.random() < 0.6) spawnMeteor();
     }, 6500);
@@ -226,44 +221,7 @@ function observeReveal(el) { revealObserver.observe(el); }
   }
 })();
 
-/* ---------- 2. 自定义鼠标 ---------- */
-(function initCursor() {
-  if (!FINE_POINTER || REDUCED_MOTION) return;
-  const dot = document.createElement('div');
-  dot.className = 'cursor-dot';
-  const ring = document.createElement('div');
-  ring.className = 'cursor-ring';
-  document.body.append(dot, ring);
-  document.documentElement.classList.add('custom-cursor');
-
-  let mx = -100, my = -100, rx = -100, ry = -100;
-
-  window.addEventListener('mousemove', (e) => {
-    mx = e.clientX;
-    my = e.clientY;
-    dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`;
-    dot.style.opacity = '1';
-    ring.style.opacity = '1';
-  }, { passive: true });
-
-  (function follow() {
-    rx += (mx - rx) * 0.16;
-    ry += (my - ry) * 0.16;
-    ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
-    requestAnimationFrame(follow);
-  })();
-
-  const HOVERABLE = 'a, button, .card, input, textarea, [data-cursor]';
-  document.addEventListener('mouseover', (e) => {
-    ring.classList.toggle('hovering', !!(e.target.closest && e.target.closest(HOVERABLE)));
-  });
-  document.addEventListener('mousedown', () => ring.classList.add('pressed'));
-  document.addEventListener('mouseup', () => ring.classList.remove('pressed'));
-  document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; ring.style.opacity = '0'; });
-  document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; ring.style.opacity = '1'; });
-})();
-
-/* ---------- 3. 卡片聚光灯 + 作品卡微倾斜 ---------- */
+/* ---------- 2. 卡片聚光灯 ---------- */
 (function initCardGlow() {
   if (!FINE_POINTER) return;
   document.querySelectorAll('.card').forEach((card) => {
@@ -274,25 +232,15 @@ function observeReveal(el) { revealObserver.observe(el); }
     });
   });
 
-  if (REDUCED_MOTION) return;
-  document.querySelectorAll('.work-card').forEach((card) => {
-    card.addEventListener('mousemove', (e) => {
-      const r = card.getBoundingClientRect();
-      const dx = (e.clientX - r.left) / r.width - 0.5;
-      const dy = (e.clientY - r.top) / r.height - 0.5;
-      card.style.transform = `translateY(-6px) perspective(900px) rotateX(${(-dy * 4).toFixed(2)}deg) rotateY(${(dx * 4).toFixed(2)}deg)`;
-    });
-    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
-  });
 })();
 
-/* ---------- 4. 滚动浮现动画 ---------- */
+/* ---------- 3. 滚动浮现动画 ---------- */
 (function initReveal() {
   const els = document.querySelectorAll('.reveal');
   els.forEach((el) => observeReveal(el));
 })();
 
-/* ---------- 5. 导航栏：滚动加深 + 移动端菜单 ---------- */
+/* ---------- 4. 导航栏：滚动加深 + 移动端菜单 ---------- */
 (function initNav() {
   const nav = document.querySelector('.nav');
   if (nav) {
@@ -302,14 +250,18 @@ function observeReveal(el) { revealObserver.observe(el); }
   }
   const toggle = document.querySelector('.nav-toggle');
   if (toggle && nav) {
-    toggle.addEventListener('click', () => nav.classList.toggle('open'));
+    toggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? '关闭菜单' : '打开菜单');
+    });
     nav.querySelectorAll('.nav-links a').forEach((a) =>
       a.addEventListener('click', () => nav.classList.remove('open'))
     );
   }
 })();
 
-/* ---------- 6. 技能条 ---------- */
+/* ---------- 5. 技能条 ---------- */
 (function initSkills() {
   const skills = document.querySelectorAll('.skill');
   if (!skills.length) return;
@@ -324,15 +276,15 @@ function observeReveal(el) { revealObserver.observe(el); }
   skills.forEach((el) => io.observe(el));
 })();
 
-/* ---------- 7. 简历页「打印 / 导出 PDF」 ---------- */
+/* ---------- 6. 简历页「打印 / 导出 PDF」 ---------- */
 const printBtn = document.querySelector('.print-btn');
 if (printBtn) printBtn.addEventListener('click', () => window.print());
 
-/* ---------- 8. 页脚年份 ---------- */
+/* ---------- 7. 页脚年份 ---------- */
 const yearEl = document.querySelector('.js-year');
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-/* ---------- 9. 亮暗色主题切换 ---------- */
+/* ---------- 8. 亮暗色主题切换 ---------- */
 (function initTheme() {
   const root = document.documentElement;
   const btn = document.querySelector('.theme-toggle');
@@ -349,6 +301,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   function apply(light) {
     root.classList.toggle('light-mode', light);
+    if (btn) btn.setAttribute('aria-label', light ? '切换至暗色模式' : '切换至亮色模式');
     syncGiscus(light);
   }
 
@@ -363,7 +316,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
   }
 })();
 
-/* ---------- 10. GitHub 动态专区 ---------- */
+/* ---------- 9. GitHub 动态专区 ---------- */
 (function initGitHub() {
   const section = document.getElementById('github');
   if (!section) return;
@@ -484,7 +437,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
   });
 })();
 
-/* ---------- 11. 作品页自动化：从 GitHub 数据渲染 ---------- */
+/* ---------- 10. 作品页自动化：从 GitHub 数据渲染 ---------- */
 (function initWorksPage() {
   const grid = document.querySelector('.js-works-grid');
   if (!grid) return;

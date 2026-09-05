@@ -34,7 +34,7 @@
       </a>
       <div class="nav-actions">
         <button class="theme-toggle" type="button" aria-label="切换亮 / 暗色模式"><i data-lucide="sun" class="icon-sun"></i><i data-lucide="moon" class="icon-moon"></i><span class="toggle-label">主题</span></button>
-        <button class="nav-toggle" aria-label="打开菜单">
+        <button class="nav-toggle" aria-label="打开菜单" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -53,20 +53,19 @@
     <section class="hero">
       <div>
         <div class="hero-badges reveal">
-          <span><i data-lucide="hammer"></i>在造东西</span>
+          <span><i data-lucide="cpu"></i>嵌入式开发</span>
+          <span><i data-lucide="circuit-board"></i>智能硬件</span>
           <span><i data-lucide="telescope"></i>仰望星空</span>
-          <span><i data-lucide="gem"></i>极简主义</span>
         </div>
-        <p class="hero-eyebrow reveal" style="transition-delay:.06s">作品集 · 博客 · 简历</p>
+        <p class="hero-eyebrow reveal" style="transition-delay:.06s">Embedded Systems Explorer</p>
         <h1 class="reveal" style="transition-delay:.12s">
-          你好，我是<span class="gradient-text">张晨曦</span>。<br>
-          仰望星空，脚踏实地。
+          想当<span class="gradient-text">数字游民</span>。
         </h1>
         <p class="hero-sub reveal" style="transition-delay:.2s">
-          一名热爱编程与设计的学生开发者。这里收藏我的作品、文章与简历——以及一点去往火星的梦想。
+          郑州轻工业大学智能物联专业在读，正在探索 MCU 与嵌入式 Linux 的边界；也用 AI、后端和小程序能力，让硬件项目真正可用。
         </p>
         <div class="hero-actions reveal" style="transition-delay:.28s">
-          <a class="btn btn-primary" href="./works.html">查看作品</a>
+          <a class="btn btn-primary" href="./works.html">查看项目</a>
           <a class="btn btn-ghost" href="./resume.html">查看简历</a>
         </div>
       </div>
@@ -90,23 +89,61 @@
           <div class="about-avatar reveal" role="img" aria-label="宇航员头像">🧑‍🚀</div>
           <div class="about-text reveal" style="transition-delay:.1s">
             <p>
-              你好！我是<strong>张晨曦</strong>，郑州轻工业大学智能物联专业在读，
-              一名喜欢折腾代码的学生开发者，也是一名不折不扣的太空爱好者。小时候总盯着夜空想：星星那头是什么？
+              你好！我是<strong>张晨曦</strong>，郑州轻工业大学智能物联专业在读。
+              我希望成为一名嵌入式开发工程师，喜欢从传感器、设备端程序到云端服务，把一个想法做成摸得着、能运行的产品。
             </p>
             <p>
-              我有企业 AI 后端实习经历，也拿过一些国家级竞赛奖项——从智能陪伴机器人到微信小程序。
-              我敬佩埃隆·马斯克<strong>「第一性原理」</strong>的思考方式，也痴迷苹果对细节近乎苛刻的坚持。这个网站就是这两种热爱的结合——
-              用最简洁的方式，展示我做过的东西、写下的想法，和我走过的路。
+              目前我还在 MCU 与嵌入式 Linux 两个方向之间持续实践：前者让我着迷于资源受限下的控制与实时性，后者则让我看到复杂设备系统的可能性。
+              AI 后端实习、微信小程序和竞赛项目，是我构建完整智能硬件体验的补充能力，而不是我想停留的终点。
             </p>
             <ul class="chips">
+              <li><i data-lucide="microchip"></i>嵌入式系统</li>
+              <li><i data-lucide="bot"></i>智能硬件</li>
+              <li><i data-lucide="radio"></i>物联网</li>
+              <li><i data-lucide="code"></i>软硬件协同</li>
               <li><i data-lucide="rocket"></i>太空</li>
-              <li><i data-lucide="bot"></i>机器人</li>
-              <li><i data-lucide="code"></i>编程</li>
-              <li><i data-lucide="apple"></i>极简设计</li>
-              <li><i data-lucide="book-open"></i>阅读</li>
-              <li><i data-lucide="coffee"></i>咖啡</li>
             </ul>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 精选作品 -->
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <p class="section-eyebrow">Featured Works</p>
+          <h2>精选作品</h2>
+          <p>从设备端交互、视觉监测到配套服务，记录我把想法落到真实场景里的过程。</p>
+        </div>
+        <div class="works-grid">
+          <a class="card work-card reveal" href="https://github.com/zcx-666666-zcx/WALL-E" target="_blank" rel="noopener">
+            <div class="work-cover cover-1"><i data-lucide="bot" aria-hidden="true"></i></div>
+            <div class="work-body">
+              <h3>WALL-E · 智能陪伴机器人</h3>
+              <p>面向银发群体的智能硬件项目，集成 AI 语音交互、视频通话与环境监测，获省赛二等奖。</p>
+              <div class="work-meta"><span><i class="lang-dot" style="background:#f1e05a"></i> JavaScript</span><span class="work-star"><i data-lucide="star"></i> 3</span></div>
+            </div>
+          </a>
+          <a class="card work-card reveal" style="transition-delay:.1s" href="https://github.com/zcx-666666-zcx/learning_helper" target="_blank" rel="noopener">
+            <div class="work-cover cover-5"><i data-lucide="book-open" aria-hidden="true"></i></div>
+            <div class="work-body">
+              <h3>智能学习助手 · 后端</h3>
+              <p>智能学习助手的后端服务，记录我如何用服务端能力支撑智能硬件与 AI 应用。</p>
+              <div class="work-meta"><span><i class="lang-dot" style="background:#b07219"></i> Java</span></div>
+            </div>
+          </a>
+          <a class="card work-card reveal" style="transition-delay:.2s" href="https://github.com/zcx-666666-zcx/chuanzhibei" target="_blank" rel="noopener">
+            <div class="work-cover cover-3"><i data-lucide="trophy" aria-hidden="true"></i></div>
+            <div class="work-body">
+              <h3>传智杯 · 微信小程序</h3>
+              <p>传智杯全国总决赛二等奖作品，从 idea 到提交的完整实战。</p>
+              <div class="work-meta"><span><i class="lang-dot" style="background:#41b883"></i> Vue</span></div>
+            </div>
+          </a>
+        </div>
+        <div class="section-more">
+          <a class="arrow-link" href="./works.html">查看全部作品</a>
         </div>
       </div>
     </section>
@@ -116,8 +153,8 @@
       <div class="container">
         <div class="section-head">
           <p class="section-eyebrow">GitHub</p>
-          <h2>GitHub 动态</h2>
-          <p>我的代码足迹——数据在每次部署时自动从 GitHub 拉取。</p>
+          <h2>持续实践</h2>
+          <p>这些数据记录我的代码足迹。项目成果比贡献数字更重要，但持续动手同样值得被看见。</p>
         </div>
         <div class="gh-stats">
           <div class="card gh-stat reveal"><strong class="js-gh-contrib">—</strong><span>过去一年贡献</span></div>
@@ -141,97 +178,17 @@
       </div>
     </section>
 
-    <!-- 火星 · 马斯克语录 -->
-    <section class="musk">
-      <div class="container">
-        <div class="mars reveal" aria-hidden="true"></div>
-        <blockquote class="reveal" style="transition-delay:.08s">
-          “当一件事足够重要时，<br>即使胜算不大，你也要去做。”
-        </blockquote>
-        <p class="quote-en reveal" style="transition-delay:.14s">
-          “When something is important enough, you do it even if the odds are not in your favor.”
-        </p>
-        <p class="quote-author reveal" style="transition-delay:.2s">— 埃隆·马斯克 Elon Musk</p>
-        <p class="quote-note reveal" style="transition-delay:.26s">
-          这句话，也是我做这个网站的理由：把热爱做出来，哪怕很小。
-        </p>
-      </div>
-    </section>
-
-    <!-- 精选作品 -->
-    <section>
-      <div class="container">
-        <div class="section-head">
-          <p class="section-eyebrow">Featured Works</p>
-          <h2>精选作品</h2>
-          <p>我做过的一些东西——有大有小，有成有败，但都让我学到很多。</p>
-        </div>
-        <div class="works-grid">
-          <a class="card work-card reveal" href="https://github.com/zcx-666666-zcx/WALL-E" target="_blank" rel="noopener">
-            <div class="work-cover cover-1"><i data-lucide="bot" aria-hidden="true"></i></div>
-            <div class="work-body">
-              <h3>WALL-E · 智能陪伴机器人</h3>
-              <p>智能适老陪伴机器人项目代码，获中国大学生计算机设计大赛河南省级赛二等奖。</p>
-              <div class="work-meta"><span><i class="lang-dot" style="background:#f1e05a"></i> JavaScript</span><span class="work-star"><i data-lucide="star"></i> 3</span></div>
-            </div>
-          </a>
-          <a class="card work-card reveal" style="transition-delay:.1s" href="https://github.com/zcx-666666-zcx/learning_helper" target="_blank" rel="noopener">
-            <div class="work-cover cover-5"><i data-lucide="book-open" aria-hidden="true"></i></div>
-            <div class="work-body">
-              <h3>智能学习助手 · 后端</h3>
-              <p>智能学习助手的后端服务，探索 AI 辅助学习的可能性。</p>
-              <div class="work-meta"><span><i class="lang-dot" style="background:#b07219"></i> Java</span></div>
-            </div>
-          </a>
-          <a class="card work-card reveal" style="transition-delay:.2s" href="https://github.com/zcx-666666-zcx/chuanzhibei" target="_blank" rel="noopener">
-            <div class="work-cover cover-3"><i data-lucide="trophy" aria-hidden="true"></i></div>
-            <div class="work-body">
-              <h3>传智杯 · 微信小程序</h3>
-              <p>传智杯全国总决赛二等奖作品，从 idea 到提交的完整实战。</p>
-              <div class="work-meta"><span><i class="lang-dot" style="background:#41b883"></i> Vue</span></div>
-            </div>
-          </a>
-        </div>
-        <div class="section-more">
-          <a class="arrow-link" href="./works.html">查看全部作品</a>
-        </div>
-      </div>
-    </section>
-
     <!-- 最新博客 -->
     <section>
       <div class="container">
         <div class="section-head">
           <p class="section-eyebrow">Latest Posts</p>
           <h2>最新文章</h2>
-          <p>关于太空、设计与技术的一点思考。</p>
+          <p>关于嵌入式、太空、设计与技术的一点思考。</p>
         </div>
         <div class="blog-list">
           <!-- ✏️ 新写文章后，在这里加一行链接 -->
-          <a class="post-row reveal" href="./posts/why-space.html">
-            <time datetime="2026-08-30">2026.08.30</time>
-            <div>
-              <h3>为什么我热爱太空</h3>
-              <p>从小时候的一次抬头，到决定做一个自己的网站。</p>
-            </div>
-            <span class="row-arrow">›</span>
-          </a>
-          <a class="post-row reveal" style="transition-delay:.08s" href="./posts/learn-from-musk.html">
-            <time datetime="2026-08-15">2026.08.15</time>
-            <div>
-              <h3>从马斯克身上学到的三件事</h3>
-              <p>第一性原理、快速迭代，以及为重要的事押上一切。</p>
-            </div>
-            <span class="row-arrow">›</span>
-          </a>
-          <a class="post-row reveal" style="transition-delay:.16s" href="./posts/apple-design.html">
-            <time datetime="2026-07-28">2026.07.28</time>
-            <div>
-              <h3>苹果的设计哲学教会我的事</h3>
-              <p>简洁不是少，而是恰到好处；细节是尊重。</p>
-            </div>
-            <span class="row-arrow">›</span>
-          </a>
+          <p class="gh-empty">文章正在筹备中，敬请期待。</p>
         </div>
         <div class="section-more">
           <a class="arrow-link" href="./blog.html">查看全部文章</a>
@@ -274,7 +231,5 @@
     <!-- Lucide 开源图标库（https://lucide.dev，ISC 许可） -->
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js" onerror="var s=document.createElement('script');s.src='https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js';s.onload=function(){if(window.lucide)window.lucide.createIcons()};document.head.appendChild(s)"></script>
   <script src="./assets/js/main.js"></script>
-  <!-- 碟片音乐播放器（全站可用，不想在某页显示就删掉这一行） -->
-  <script src="./assets/js/music.js"></script>
 </body>
 </html>
