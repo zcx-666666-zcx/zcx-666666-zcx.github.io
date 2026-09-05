@@ -6,8 +6,7 @@
 
 ```
 personal-website/
-├── index.html          首页（英雄区 / 关于我 / GitHub 动态 / 精选作品 / 最新文章）
-├── works.html          作品集（GitHub 真实项目）
+├── index.html          首页（英雄区 / 关于我 / GitHub 动态 / 最新文章）
 ├── blog.html           博客列表
 ├── resume.html         简历（支持「打印 / 导出 PDF」）
 ├── 404.html            走丢页面（飘到外太空了）
@@ -47,13 +46,12 @@ cd personal-website && python -m http.server 8000
 | 名字 / 个人标语 | `index.html` 英雄区、导航栏 logo、各页页脚 |
 | 头像 | `index.html` 「关于我」区块，把 emoji 换成 `<img>` |
 | 邮箱 / GitHub 链接 | 每页导航栏、页脚、简历页 |
-| 作品项目 | `works.html`（6 张卡片）和 `index.html`（精选 3 张） |
 | 简历内容 | `resume.html`（经历/项目/技能/教育全部是示例） |
 | 技能条长度 | `resume.html` 里每个 `.skill` 的 `--w: 92%` |
 
 ## 🎵 换成自己喜欢的音乐
 
-博客和文章页右下角有一台可选的「小唱机」：点碟片开始播放，再点一下暂停，面板里可以切歌；播放时碟片会转、有音符飘出。简历、作品集等信息页面默认不显示，避免影响阅读。
+博客和文章页右下角有一台可选的「小唱机」：点碟片开始播放，再点一下暂停，面板里可以切歌；播放时碟片会转、有音符飘出。简历等纯阅读页面默认不显示，避免影响阅读。
 
 想换成自己的歌：
 
@@ -122,7 +120,7 @@ cd personal-website && python -m http.server 8000
 - **发布仓库（公开）**：`zcx-666666-zcx/zcx-666666-zcx.github.io`
 - **线上地址**：<https://zcx-666666-zcx.github.io>
 
-只要 `git push` 到 `main` 分支，GitHub Actions（见 `.github/workflows/deploy.yml`）就会自动把站点文件（`index.html`、`works.html`、`blog.html`、`resume.html`、`posts/`、`assets/`、`README.md`）同步到公开仓库，Pages 随之自动构建上线，无需手动上传。
+只要 `git push` 到 `main` 分支，GitHub Actions（见 `.github/workflows/deploy.yml`）就会自动把站点文件（`index.html`、`blog.html`、`resume.html`、`posts/`、`assets/`、`README.md`）同步到公开仓库，Pages 随之自动构建上线，无需手动上传。
 
 > 部署机制：私有仓库免费版不能直接开 Pages，所以由公开仓库提供 Pages 服务；同步用的 SSH 私钥存在私有仓库的 Actions secret `PAGES_DEPLOY_KEY` 里，公钥是公开仓库的 deploy key。
 
