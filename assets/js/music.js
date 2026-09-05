@@ -86,6 +86,11 @@ const MUSIC_CONFIG = {
       <button class="music-ctrl main js-music-toggle" type="button" aria-label="播放 / 暂停"><i data-lucide="play" class="i-play"></i><i data-lucide="pause" class="i-pause"></i></button>
       <button class="music-ctrl js-music-next" type="button" aria-label="下一首"><i data-lucide="skip-forward"></i></button>
     </div>
+    <div class="music-volume">
+      <i data-lucide="volume-1" aria-hidden="true"></i>
+      <input class="js-music-volume" type="range" min="0" max="100" step="1" value="10" aria-label="调整音量">
+      <span class="music-vol-num js-music-vol-num">10%</span>
+    </div>
     <div class="music-list js-music-list"></div>
     <p class="music-tip">✏️ 想换成自己喜欢的歌？把音乐文件放进 <b>assets/music/</b>，再编辑 <b>assets/js/music.js</b> 顶部的播放列表。</p>
   `;
@@ -98,6 +103,8 @@ const MUSIC_CONFIG = {
   const totalEl = $('.js-music-total');
   const toggleBtn = $('.js-music-toggle');
   const listEl = $('.js-music-list');
+  const volumeInput = $('.js-music-volume');
+  const volNumEl = $('.js-music-vol-num');
 
   /* ---------- 播放列表 ---------- */
   const list = MUSIC_CONFIG.playlist.map((t, i) => ({ ...t, index: i }));
@@ -125,6 +132,7 @@ const MUSIC_CONFIG = {
       localStorage.setItem(STORE_KEY, JSON.stringify({
         track: current,
         time: audio.src ? (audio.currentTime || 0) : 0,
+        volume: audio.volume,
         savedAt: Date.now(),
         ...extra,
       }));
@@ -136,6 +144,22 @@ const MUSIC_CONFIG = {
     && restore.track >= 0 && restore.track < list.length) ? restore.track : 0;
   let pendingSeek = 0;   // 下一次曲目加载完成后要跳转到的进度
   let lastSaveAt = 0;
+
+  // 音量：初始 10%，拖动条自由调整；选择随播放状态一起记住
+  const VOLUME_DEFAULT = 0.1;
+  function applyVolume(v, save = false) {
+    const vol = Math.min(1, Math.max(0, Number(v) || 0));
+    audio.volume = vol;
+    const pct = Math.round(vol * 100);
+    if (volumeInput) {
+      volumeInput.value = pct;
+      volumeInput.style.setProperty('--vol', `${pct}%`);
+      volNumEl.textContent = `${pct}%`;
+    }
+    if (save) saveState();
+  }
+  applyVolume((restore && typeof restore.volume === 'number') ? restore.volume : VOLUME_DEFAULT);
+  if (volumeInput) volumeInput.addEventListener('input', () => applyVolume(volumeInput.value / 100, true));
 
   function fmt(sec) {
     if (!isFinite(sec)) return '0:00';
