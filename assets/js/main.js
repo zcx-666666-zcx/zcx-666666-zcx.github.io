@@ -475,6 +475,13 @@ function daysSinceLaunch() {
       .then((s) => {
         fill('.js-stat-posts', s.posts);
         fill('.js-stat-words', s.totalChars.toLocaleString());
+        // 一篇文章都还没有时，「篇文章 / 总字数」只是两个零，留着反而显得站点空荡
+        if (!s.posts) {
+          document.querySelectorAll('.js-stat-posts, .js-stat-words').forEach((el) => {
+            const item = el.closest('.stat-item');
+            if (item) item.hidden = true;
+          });
+        }
         // 每篇文章的字数与阅读时长（数据键为站点绝对路径）
         document.querySelectorAll('.blog-list .post-row[href]').forEach((row) => {
           const path = new URL(row.getAttribute('href'), location.href).pathname;

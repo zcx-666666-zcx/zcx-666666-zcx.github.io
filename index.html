@@ -4,15 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="张晨曦的个人网站——作品集、博客与简历。热爱编程、设计与星空。">
+  <meta name="description" content="张晨曦的个人网站。郑州轻工业大学智能物联专业在读，专注 MCU 与嵌入式 Linux，这里记录我的项目、学习笔记与简历。">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="张晨曦的个人网站">
-  <meta property="og:title" content="张晨曦 · 个人网站">
-  <meta property="og:description" content="张晨曦的个人网站——作品集、博客与简历。热爱编程、设计与星空。">
+  <meta property="og:title" content="张晨曦 · 嵌入式开发 / 智能硬件">
+  <meta property="og:description" content="张晨曦的个人网站。郑州轻工业大学智能物联专业在读，专注 MCU 与嵌入式 Linux，这里记录我的项目、学习笔记与简历。">
   <meta property="og:url" content="https://zcx-666666-zcx.github.io/">
   <meta property="og:image" content="https://zcx-666666-zcx.github.io/assets/img/og-cover.png">
   <meta name="twitter:card" content="summary_large_image">
-  <title>张晨曦 · 作品、博客与简历</title>
+  <title>张晨曦 · 嵌入式开发 / 智能硬件</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='26' fill='%233f8ce8'/%3E%3Cellipse cx='50' cy='53' rx='44' ry='11' fill='none' stroke='%23f2f3f7' stroke-width='5' opacity='.9' transform='rotate(-18 50 53)'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,17 +37,17 @@
         </svg>
         张晨曦
       </a>
+      <nav class="nav-links">
+        <a href="./index.html" class="active">首页</a>        <a href="./blog.html">博客</a>
+        <a href="./resume.html">简历</a>
+        <a href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">GitHub</a>
+      </nav>
       <div class="nav-actions">
         <button class="theme-toggle" type="button" aria-label="切换亮 / 暗色模式"><i data-lucide="sun" class="icon-sun"></i><i data-lucide="moon" class="icon-moon"></i><span class="toggle-label">主题</span></button>
         <button class="nav-toggle" aria-label="打开菜单" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
-      <nav class="nav-links">
-        <a href="./index.html" class="active">首页</a>        <a href="./blog.html">博客</a>
-        <a href="./resume.html">简历</a>
-        <a href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">GitHub</a>
-      </nav>
     </div>
   </header>
 
@@ -162,8 +162,12 @@
           <p>关于嵌入式、太空、设计与技术的一点思考。</p>
         </div>
         <div class="blog-list">
-          <!-- ✏️ 新写文章后，在这里加一行链接 -->
-          <p class="gh-empty">文章正在筹备中，敬请期待。</p>
+          <!-- ✏️ 新写文章后，在这里加一行链接，并删掉下面的空状态块 -->
+          <div class="empty-state reveal">
+            <span class="empty-icon"><i data-lucide="pen-line"></i></span>
+            <p class="empty-title">第一篇文章还在路上</p>
+            <p class="empty-desc">站点刚开张，还没有发布内容。之后会在这里记录嵌入式与硬件项目里的实践。</p>
+          </div>
         </div>
         <div class="section-more">
           <a class="arrow-link" href="./blog.html">查看全部文章</a>

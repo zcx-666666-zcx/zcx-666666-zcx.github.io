@@ -17,7 +17,7 @@
   --bg: #05060f;
   --text: #f2f3f7;
   --text-2: #a9adbd;          /* 次级文字 */
-  --text-3: #71768a;          /* 弱化文字 */
+  --text-3: #7d8299;          /* 弱化文字：对 #05060f 底 5.3:1，满足 WCAG AA */
 
   /* 唯一的强调色（蓝色家族） */
   --accent: #3f8ce8;
@@ -27,6 +27,10 @@
   --accent-a16: rgba(63, 140, 232, 0.16);
   --accent-a32: rgba(63, 140, 232, 0.32);
   --accent-a50: rgba(63, 140, 232, 0.5);
+
+  /* 首页英雄区的轨道线（亮色模式需加深，见 html.light-mode） */
+  --orbit-1: rgba(142, 197, 255, 0.3);
+  --orbit-2: rgba(142, 197, 255, 0.16);
 
   /* 玻璃与描边 */
   --glass-bg: linear-gradient(150deg, rgba(255,255,255,0.07), rgba(255,255,255,0.028));
@@ -93,10 +97,18 @@ img { max-width: 100%; display: block; }
 ul { list-style: none; }
 button { font-family: inherit; }
 
+/* 键盘焦点环。这里刻意不写 border-radius：
+   现代浏览器的 outline 会自动贴合元素自身的圆角，
+   若在此处写死圆角，胶囊按钮与圆形按钮获得焦点时会被掰成 8px 方角。 */
 a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
   outline: 2px solid var(--accent-hi);
   outline-offset: 3px;
-  border-radius: var(--radius-xs);
+}
+/* 蓝底元素上的蓝色焦点环等于没有，改用白色外环 */
+.btn-primary:focus-visible,
+.music-ctrl.main:focus-visible,
+.skip-link:focus-visible {
+  outline-color: #fff;
 }
 
 /* ---------- 背景层：深空渐变 + 光斑 + 星空画布 + 颗粒 ---------- */
@@ -213,6 +225,39 @@ main, .site-footer { position: relative; z-index: var(--z-content); }
 }
 @keyframes skeleton-sweep { to { transform: translateX(100%); } }
 
+/* 空状态：给「还没有内容」一个像样的形状。
+   一行灰色小字会让整个区块看起来像加载失败，改用有图标、有层级的占位块。 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 560px;
+  padding: 34px 32px 36px;
+  border: 1px dashed var(--glass-border);
+  border-radius: var(--radius);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+}
+.empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--accent-a32);
+  background: var(--accent-a08);
+  color: var(--accent-hi);
+}
+.empty-icon .lucide { width: 18px; height: 18px; }
+.empty-title { font-size: 17px; font-weight: 600; letter-spacing: -0.012em; color: var(--text); }
+.empty-desc { font-size: 14.5px; line-height: 1.7; color: var(--text-2); text-wrap: pretty; }
+html.light-mode .empty-state {
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.42));
+}
+html.light-mode .empty-icon { color: var(--accent); }
+
 /* 等宽字体用于数字、日期、代码、版本号 */
 .mono {
   font-family: var(--font-mono);
@@ -242,7 +287,10 @@ main, .site-footer { position: relative; z-index: var(--z-content); }
   padding: 0 12px 0 22px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* 导航链接与主题按钮同属右侧一组，logo 独占左侧。
+     这里不能用 space-between：三个子元素均分会让主题按钮飘在导航正中。 */
+  justify-content: flex-end;
+  gap: 6px;
   border-radius: var(--radius-pill);
   background: rgba(14, 16, 30, 0.52);
   backdrop-filter: blur(26px) saturate(180%);
@@ -259,6 +307,7 @@ main, .site-footer { position: relative; z-index: var(--z-content); }
   display: flex;
   align-items: center;
   gap: 9px;
+  margin-right: auto;
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.005em;
@@ -372,6 +421,11 @@ main, .site-footer { position: relative; z-index: var(--z-content); }
 .hero-mark .orbit-slow { animation: orbit-turn 46s linear infinite; }
 .hero-mark .orbit-fast { animation: orbit-turn 28s linear infinite reverse; }
 @keyframes orbit-turn { to { transform: rotate(360deg); } }
+/* 轨道线由变量驱动：SVG 里写死的浅蓝在亮色背景上几乎看不见。
+   CSS 的 stroke 优先级高于 SVG 的表现属性，因此这里能覆盖。 */
+.hero-mark .orbit-slow ellipse { stroke: var(--orbit-1); }
+.hero-mark .orbit-fast ellipse { stroke: var(--orbit-2); }
+.hero-mark .orbit-slow circle { fill: var(--accent-soft); }
 
 /* 标题高亮词：同色系渐变，不是蓝→紫→粉的三色花 */
 .gradient-text {
@@ -467,8 +521,10 @@ section { padding: clamp(78px, 8.5vw, 116px) 0 clamp(88px, 9.5vw, 132px); }
 }
 .section-more { margin-top: 44px; }
 
-/* 内页顶部 */
-.page-hero { padding: calc(var(--nav-height) + 88px) 0 44px; }
+/* 内页顶部。这里必须用 padding-top / padding-bottom 两个长属性：
+   写成 padding 简写会把 .container 的左右内边距一并清零，
+   在窄屏上正文会直接贴到屏幕边缘（桌面端被 max-width 居中掩盖，不易发现）。 */
+.page-hero { padding-top: calc(var(--nav-height) + 88px); padding-bottom: 44px; }
 .page-hero h1 {
   font-size: clamp(38px, 5.6vw, 66px);
   font-weight: 600;
@@ -477,7 +533,11 @@ section { padding: clamp(78px, 8.5vw, 116px) 0 clamp(88px, 9.5vw, 132px); }
   margin-bottom: 16px;
   text-wrap: balance;
 }
-.page-hero p { font-size: 17.5px; color: var(--text-2); max-width: 600px; text-wrap: pretty; }
+/* 内页顶部。这里的 :where() 是关键：
+   它把整条选择器的特异性降到 (0,0,1)，只当作「裸段落」的兜底样式。
+   若写成 .page-hero p（0,1,1），会盖掉 .resume-title、.blog-hint 这类
+   自带 class 的元素，让它们拿不到自己的字号与颜色。 */
+:where(.page-hero) p { font-size: 17.5px; color: var(--text-2); max-width: 600px; text-wrap: pretty; }
 
 /* ---------- 卡片：玻璃质感 ----------
    卡片只在需要表达层级时使用；同质数据改用分隔线排版。 */
@@ -782,7 +842,7 @@ html.light-mode .gh-legend i { background: rgba(28, 42, 88, 0.1); }
 .gh-cell.lv3 { background: rgba(63, 140, 232, 0.62); }
 .gh-cell.lv4 { background: var(--accent-hi); }
 
-.gh-loading, .gh-empty {
+.gh-loading {
   padding: 14px 0;
   color: var(--text-3);
   font-size: 14px;
@@ -813,7 +873,9 @@ html.light-mode .gh-legend i { background: rgba(28, 42, 88, 0.1); }
 .footer-copy .lucide { color: var(--accent-soft); }
 
 /* ---------- 博客文章页 ---------- */
-.post-wrap { max-width: 680px; margin: 0 auto; padding: 0 24px; }
+/* 文章正文列宽。左右内边距由外层 .container 提供，
+   这里不能再写一遍，否则窄屏上会出现 48px 的双层留白。 */
+.post-wrap { max-width: 680px; margin: 0 auto; }
 .back-link {
   display: inline-flex;
   align-items: center;
@@ -1426,12 +1488,15 @@ html.light-mode .music-label .lucide { color: var(--accent); }
   align-items: center;
   gap: 5px;
   text-align: center;
+  min-width: 0;               /* 允许列被压缩，长数字不会撑破网格 */
 }
+.site-stats .stat-item[hidden] { display: none; }
 .site-stats .stat-item .lucide { width: 16px; height: 16px; color: var(--accent); opacity: 0.85; }
 .site-stats strong {
   display: block;
+  max-width: 100%;
   font-family: var(--font-mono);
-  font-size: 24px;
+  font-size: clamp(20px, 2.1vw, 24px);
   font-weight: 500;
   letter-spacing: -0.035em;
   color: var(--text);
@@ -1496,7 +1561,7 @@ html.light-mode .row-tags span:hover { color: #0b57c2; }
 
 @media (max-width: 720px) {
   .site-stats { gap: 10px; padding: 18px 0; }
-  .site-stats strong { font-size: 20px; }
+  .site-stats strong { font-size: 18px; }
   .row-chars { margin-left: 0; width: 100%; }
 }
 
@@ -1561,6 +1626,8 @@ html.light-mode {
   --accent-a16: rgba(26, 111, 212, 0.14);
   --accent-a32: rgba(26, 111, 212, 0.3);
   --accent-a50: rgba(26, 111, 212, 0.46);
+  --orbit-1: rgba(26, 111, 212, 0.32);
+  --orbit-2: rgba(26, 111, 212, 0.18);
   --glass-bg: linear-gradient(150deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.5));
   --glass-bg-hover: linear-gradient(150deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.66));
   --glass-border: rgba(28, 42, 88, 0.12);
@@ -1721,6 +1788,51 @@ html.light-mode .music-track.active { color: #0b57c2; }
   .music-panel { width: min(300px, calc(100vw - 40px)); }
 }
 
+/* ---------- 触屏设备：取消依赖悬停的位移、聚光灯与变色 ----------
+   触屏上 :hover 会在点按之后一直粘住，卡片与标签会保持「悬停中」的样子。
+   这里逐条还原成默认态；.light-mode 的悬停规则优先级更高，需要一并覆盖。 */
+@media (hover: none) {
+  .card:hover {
+    transform: none;
+    border-color: var(--glass-border);
+    background: var(--glass-bg);
+    box-shadow: var(--shadow-card);
+  }
+  .card:hover::before { opacity: 0; }
+  .post-row:hover,
+  html.light-mode .post-row:hover {
+    background: none;
+    border-color: transparent;
+    transform: none;
+  }
+  .post-row:hover .row-arrow { color: var(--text-3); transform: none; }
+  .chips li:hover { transform: none; border-color: var(--glass-border); }
+  .skill-group:hover { border-color: var(--glass-border); background: rgba(255, 255, 255, 0.035); }
+  html.light-mode .skill-group:hover { background: rgba(255, 255, 255, 0.58); }
+  .tag-pill:hover,
+  html.light-mode .tag-pill:hover {
+    background: rgba(255, 255, 255, 0.045);
+    color: var(--text-2);
+    transform: none;
+  }
+  .music-disc:hover { transform: none; }
+  .theme-toggle:hover,
+  html.light-mode .theme-toggle:hover { background: rgba(255, 255, 255, 0.055); color: var(--text-2); }
+  .music-ctrl:hover { background: rgba(255, 255, 255, 0.055); color: var(--text-2); }
+  .music-ctrl.main:hover { background: var(--accent); color: #fff; }
+  .music-track:hover { background: none; color: var(--text-2); }
+  .music-label:hover { transform: translateY(-50%); }
+  .gh-cell:hover { transform: none; box-shadow: none; }
+  .nav-links a:hover { color: var(--text-2); background: none; }
+  .footer-links a:hover { color: var(--text-3); }
+  .back-link:hover { color: var(--text-3); }
+  .arrow-link:hover { gap: 4px; }
+  .btn:hover::after { left: -80%; }
+  .btn-ghost:hover { background: rgba(255, 255, 255, 0.055); border-color: rgba(255, 255, 255, 0.19); }
+  html.light-mode .btn-ghost:hover { background: rgba(255, 255, 255, 0.62); }
+  .timeline-item ul li a:hover { text-decoration: none; }
+}
+
 /* 用户偏好减少动态效果 */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -1755,24 +1867,26 @@ html.light-mode .music-track.active { color: #0b57c2; }
   .aurora, .grain { display: none; }
 }
 
-/* ---------- 打印样式（简历页「导出 PDF」用） ---------- */
+/* ---------- 打印样式（简历页「导出 PDF」用） ----------
+   纸张上不用深空底色，改为中性浅色；文字与强调色沿用亮色模式的取值，
+   保证导出的 PDF 与网页是同一套视觉。 */
 @media print {
   #stars, .nav, .site-footer, .resume-actions, .comments, .theme-toggle,
   .aurora, .grain, .music-player, .skip-link, .hero-mark,
   .page-hero .section-eyebrow, .back-link { display: none !important; }
-  body { background: #fff; color: #1d1d1f; font-size: 13px; }
+  body { background: #fff; color: #1c1d30; font-size: 13px; }
   body::before { display: none; }
   main, .page-hero { padding: 0 !important; }
-  .page-hero h1, .resume-header h1 { color: #1d1d1f; font-size: 28px; }
-  .resume-title { color: #0071e3; }
+  .page-hero h1, .resume-header h1 { color: #1c1d30; font-size: 28px; }
+  .resume-title { color: #0b57c2; }
   .resume-contacts, .timeline-item p, .post-content p,
-  .timeline-item time, .timeline-item .tl-role { color: #424245; }
-  .resume-section > h2 { color: #1d1d1f; border-bottom-color: #d2d2d7; }
-  .timeline { border-left-color: #d2d2d7; }
-  .timeline-item::before { background: #0071e3; box-shadow: none; }
-  .tags span, .chips li { border-color: #d2d2d7; color: #424245; background: #fff; }
+  .timeline-item time, .timeline-item .tl-role { color: #4e5068; }
+  .resume-section > h2 { color: #1c1d30; border-bottom-color: #d5d9e8; }
+  .timeline { border-left-color: #d5d9e8; }
+  .timeline-item::before { background: #0b57c2; box-shadow: none; }
+  .tags span, .chips li { border-color: #d5d9e8; color: #4e5068; background: #fff; }
   .resume-section { margin-top: 30px; page-break-inside: avoid; }
-  .card { border-color: #e8e8ed; background: #fff; box-shadow: none; }
+  .card { border-color: #e8eaf2; background: #fff; box-shadow: none; }
   .card::before { display: none; }
   .reveal { opacity: 1 !important; transform: none !important; }
 }

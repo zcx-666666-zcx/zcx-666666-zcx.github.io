@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="张晨曦的博客：关于太空、设计与技术的思考，还有随手听的歌。">
+  <meta name="description" content="张晨曦的博客：嵌入式、智能硬件与技术的实践笔记。右下角还有一台可以边读边听的小唱机。">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="张晨曦的个人网站">
   <meta property="og:title" content="博客 · 张晨曦">
-  <meta property="og:description" content="张晨曦的博客：关于太空、设计与技术的思考，还有随手听的歌。">
+  <meta property="og:description" content="张晨曦的博客：嵌入式、智能硬件与技术的实践笔记。右下角还有一台可以边读边听的小唱机。">
   <meta property="og:url" content="https://zcx-666666-zcx.github.io/blog.html">
   <meta property="og:image" content="https://zcx-666666-zcx.github.io/assets/img/og-cover.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -34,17 +34,17 @@
         </svg>
         张晨曦
       </a>
+      <nav class="nav-links">
+        <a href="./index.html">首页</a>        <a href="./blog.html" class="active">博客</a>
+        <a href="./resume.html">简历</a>
+        <a href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">GitHub</a>
+      </nav>
       <div class="nav-actions">
         <button class="theme-toggle" type="button" aria-label="切换亮 / 暗色模式"><i data-lucide="sun" class="icon-sun"></i><i data-lucide="moon" class="icon-moon"></i><span class="toggle-label">主题</span></button>
         <button class="nav-toggle" aria-label="打开菜单" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
-      <nav class="nav-links">
-        <a href="./index.html">首页</a>        <a href="./blog.html" class="active">博客</a>
-        <a href="./resume.html">简历</a>
-        <a href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">GitHub</a>
-      </nav>
     </div>
   </header>
 
@@ -52,7 +52,7 @@
     <div class="container page-hero">
       <p class="section-eyebrow">Blog</p>
       <h1>博客</h1>
-      <p>关于太空、设计与技术的一点思考。慢慢写，不着急。</p>
+      <p>关于嵌入式、太空、设计与技术的一点思考。慢慢写，不着急。</p>
       <p class="blog-hint"><i data-lucide="disc-3"></i>右下角有一台小唱机。点一下碟片，边读边听。</p>
     </div>
 
@@ -67,8 +67,12 @@
         </div>
         <div class="tag-filter js-tag-filter" aria-label="按标签筛选文章"></div>
         <div class="blog-list">
-          <!-- ✏️ 新写文章后，复制一行 <a class="post-row"> 放到这里最上方 -->
-          <p class="gh-empty">文章正在筹备中，敬请期待。</p>
+          <!-- ✏️ 新写文章后，复制一行 <a class="post-row"> 放到这里最上方，并删掉下面的空状态块 -->
+          <div class="empty-state">
+            <span class="empty-icon"><i data-lucide="pen-line"></i></span>
+            <p class="empty-title">第一篇文章还在路上</p>
+            <p class="empty-desc">站点刚开张，还没有发布内容。之后会在这里记录嵌入式与硬件项目里的实践。</p>
+          </div>
         </div>
       </div>
     </section>
