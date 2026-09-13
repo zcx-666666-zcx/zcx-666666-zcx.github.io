@@ -3,10 +3,9 @@
    1. 深空背景（星空 + 极光，亮暗色自适应）
    2. 卡片聚光灯
    4. 滚动浮现动画
-   5. 导航栏 / 技能条 / 打印 / 年份
+   5. 导航栏 / 打印 / 年份
    6. 亮暗色主题切换（记忆偏好，同步 giscus 评论主题）
    7. GitHub 动态专区（部署时自动生成的数据）
-   8. 作品页自动化（从 GitHub 数据渲染，精选文案合并）
    9. 访问统计（GoatCounter，填入站点代码即启用）
    ============================================================ */
 
@@ -261,22 +260,7 @@ function observeReveal(el) { revealObserver.observe(el); }
   }
 })();
 
-/* ---------- 5. 技能条 ---------- */
-(function initSkills() {
-  const skills = document.querySelectorAll('.skill');
-  if (!skills.length) return;
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        io.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.4 });
-  skills.forEach((el) => io.observe(el));
-})();
-
-/* ---------- 6. 简历页「打印 / 导出 PDF」 ---------- */
+/* ---------- 5. 简历页「打印 / 导出 PDF」 ---------- */
 const printBtn = document.querySelector('.print-btn');
 if (printBtn) printBtn.addEventListener('click', () => window.print());
 
@@ -437,63 +421,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
   });
 })();
 
-/* ---------- 10. 作品页自动化：从 GitHub 数据渲染 ---------- */
-(function initWorksPage() {
-  const grid = document.querySelector('.js-works-grid');
-  if (!grid) return;
-
-  // 精选文案：仓库名 → 封面与描述（新仓库没匹配到时自动生成兜底文案）
-  const CURATED = {
-    'WALL-E': { icon: 'bot', cover: 'cover-1', desc: '智能适老陪伴机器人的项目代码：AI 语音交互、视频通话与环境监测，获中国大学生计算机设计大赛河南省级赛二等奖。' },
-    'learning_helper': { icon: 'book-open', cover: 'cover-5', desc: '智能学习助手的后端服务，从接口设计到业务逻辑的完整实现，探索 AI 辅助学习。' },
-    'chuanzhibei': { icon: 'trophy', cover: 'cover-3', desc: '第八届传智杯全国总决赛二等奖作品，从 idea 到提交的完整实战经历。' },
-    'videodna_demo': { icon: 'clapperboard', cover: 'cover-4', desc: '基于阿里云能力的视频 DNA 检测与智能标签示例，感受云端 AI 服务的调用流程。' },
-    'ZZULI.dev': { icon: 'graduation-cap', cover: 'cover-6', desc: '收集 ZZULI 开发者校友信息的开源计划，看看大家都在做什么。我参与其中。' },
-    'social-auto-upload': { icon: 'satellite-dish', cover: 'cover-2', desc: '一键把视频图文分发到抖音、小红书、B 站、YouTube 等平台的自动化工具。' },
-  };
-  const COVERS = ['cover-1', 'cover-2', 'cover-3', 'cover-4', 'cover-5', 'cover-6'];
-  const FALLBACK_ICONS = ['sparkles', 'wrench', 'package', 'globe', 'terminal', 'flask-conical'];
-
-  fetch('assets/data/github-repos.json')
-    .then((r) => r.json())
-    .then((repos) => {
-      if (!Array.isArray(repos) || !repos.length) return;
-      const sorted = [...repos]
-        .filter((r) => r.name !== 'zcx-666666-zcx.github.io')   // 本站自己的部署仓库不上作品集
-        .sort((a, b) => (b.stargazers_count - a.stargazers_count) || (new Date(b.pushed_at) - new Date(a.pushed_at)));
-      if (!sorted.length) return;
-
-      grid.innerHTML = '';
-      sorted.forEach((repo, i) => {
-        const cur = CURATED[repo.name] || {};
-        const a = document.createElement('a');
-        a.className = 'card work-card reveal';
-        a.href = repo.html_url;
-        a.target = '_blank';
-        a.rel = 'noopener';
-        a.style.transitionDelay = `${(i % 6) * 0.06}s`;
-        const icon = cur.icon || FALLBACK_ICONS[i % FALLBACK_ICONS.length];
-        const cover = cur.cover || COVERS[i % COVERS.length];
-        const desc = cur.desc || repo.description || '这个仓库还没有简介，欢迎去 GitHub 看看代码。';
-        a.innerHTML = `
-          <div class="work-cover ${cover}"><i data-lucide="${icon}" aria-hidden="true"></i></div>
-          <div class="work-body">
-            <h3>${repo.name}${repo.fork ? ' <span class="fork-badge">开源共建</span>' : ''}</h3>
-            <p>${desc}</p>
-            <div class="work-meta">
-              ${repo.language ? `<span><i class="lang-dot" style="background:${langColor(repo.language)}"></i> ${repo.language}</span>` : ''}
-              ${repo.stargazers_count ? `<span class="work-star">⭐ ${repo.stargazers_count}</span>` : ''}
-            </div>
-          </div>`;
-        grid.appendChild(a);
-      });
-      grid.querySelectorAll('.reveal').forEach((el) => observeReveal(el));
-      refreshIcons();
-    })
-    .catch(() => { /* 拉取失败时保留页面里的静态卡片 */ });
-})();
-
-/* ---------- 12. 访问统计（GoatCounter） ----------
+/* ---------- 10. 访问统计（GoatCounter） ----------
    ✏️ 到 https://www.goatcounter.com 免费注册后，
    把分配的站点代码填到下面（例如 'zcx' 代表 zcx.goatcounter.com），保存即生效。 */
 const GOATCOUNTER_SITE = '';

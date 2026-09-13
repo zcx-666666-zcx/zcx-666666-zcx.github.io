@@ -92,7 +92,6 @@ const MUSIC_CONFIG = {
       <span class="music-vol-num js-music-vol-num">10%</span>
     </div>
     <div class="music-list js-music-list"></div>
-    <p class="music-tip">✏️ 想换成自己喜欢的歌？把音乐文件放进 <b>assets/music/</b>，再编辑 <b>assets/js/music.js</b> 顶部的播放列表。</p>
   `;
 
   const $ = (sel) => player.querySelector(sel);

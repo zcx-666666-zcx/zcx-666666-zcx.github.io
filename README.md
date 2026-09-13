@@ -47,7 +47,6 @@ cd personal-website && python -m http.server 8000
 | 头像 | `index.html` 「关于我」区块，把 emoji 换成 `<img>` |
 | 邮箱 / GitHub 链接 | 每页导航栏、页脚、简历页 |
 | 简历内容 | `resume.html`（经历/项目/技能/教育全部是示例） |
-| 技能条长度 | `resume.html` 里每个 `.skill` 的 `--w: 92%` |
 
 ## 🎵 换成自己喜欢的音乐
 
