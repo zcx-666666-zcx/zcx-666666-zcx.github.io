@@ -359,24 +359,24 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
   }
 
   function renderRepos(container, repos) {
+    // 取 5 个：首张卡片在网格里跨两列，5 张正好填满 3 列 × 2 行，不留空格
     const sorted = [...repos]
       .sort((a, b) => (b.stargazers_count - a.stargazers_count) || (new Date(b.pushed_at) - new Date(a.pushed_at)))
-      .slice(0, 6);
+      .slice(0, 5);
     container.innerHTML = '';
-    sorted.forEach((repo, i) => {
+    sorted.forEach((repo) => {
       const a = document.createElement('a');
       a.className = 'card work-card reveal';
       a.href = repo.html_url;
       a.target = '_blank';
       a.rel = 'noopener';
-      a.style.transitionDelay = `${i * 0.07}s`;
       a.innerHTML = `
-        <div class="work-body" style="padding-top:24px">
+        <div class="work-body">
           <h3>${repo.name}</h3>
           <p>${repo.description || '这个仓库还没有简介。'}</p>
           <div class="work-meta">
             ${repo.language ? `<span><i class="lang-dot" style="background:${langColor(repo.language)}"></i> ${repo.language}</span>` : ''}
-            <span>⭐ ${repo.stargazers_count}</span>
+            <span><i data-lucide="star"></i>${repo.stargazers_count}</span>
           </div>
         </div>`;
       container.appendChild(a);
@@ -385,8 +385,13 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   load().then(({ profile, repos, contributions }) => {
     const hasAny = profile || repos || contributions;
+    const grid = section.querySelector('.js-gh-repos-grid');
     if (!hasAny) {
-      section.querySelectorAll('.gh-loading').forEach((el) => { el.textContent = '暂时无法加载 GitHub 数据。'; });
+      // 错误状态：说明发生了什么，并留一条能走的路
+      if (grid) {
+        grid.innerHTML = '<p class="gh-loading">暂时无法加载 GitHub 数据，可以直接去 <a href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">GitHub 主页</a>看看。</p>';
+      }
+      section.querySelectorAll('.gh-heatmap').forEach((el) => el.remove());
       return;
     }
 
@@ -402,7 +407,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
       computeThresholds(contributions);
       const cal = section.querySelector('.js-gh-calendar');
       const totalEl = section.querySelector('.js-gh-total');
-      if (cal) renderCalendar(cal, contributions);
+      if (cal) { renderCalendar(cal, contributions); cal.classList.remove('is-loading'); }
       if (totalEl) totalEl.textContent = `${contributions.totalContributions.toLocaleString()} 次贡献 · 过去一年`;
     } else {
       section.querySelectorAll('.gh-heatmap').forEach((el) => el.remove());
@@ -410,12 +415,14 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 
     // 仓库卡片
     if (repos && repos.length) {
-      const grid = section.querySelector('.js-gh-repos-grid');
       if (grid) {
         renderRepos(grid, repos);
         grid.querySelectorAll('.reveal').forEach((el) => observeReveal(el));
         refreshIcons();
       }
+    } else if (grid) {
+      // 空状态：说清楚这里为什么是空的
+      grid.innerHTML = '<p class="gh-loading">这个账号下还没有公开仓库。</p>';
     }
     section.querySelectorAll('.gh-loading').forEach((el) => el.remove());
   });
