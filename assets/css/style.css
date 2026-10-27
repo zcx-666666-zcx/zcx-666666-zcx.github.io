@@ -1815,8 +1815,10 @@ html.light-mode .music-track.active { color: #0b57c2; }
   .works-grid, .works-grid.grid-2 { grid-template-columns: 1fr; }
   .works-grid > .work-card:first-child { grid-column: auto; }
   .gh-stats { grid-template-columns: repeat(2, 1fr); }
-  .gh-cell { width: 11px; height: 11px; }
-  .gh-calendar { grid-template-rows: repeat(7, 11px); grid-auto-columns: 11px; gap: 3px; }
+  .gh-cell { width: 9px; height: 9px; border-radius: 2px; }
+  .gh-calendar { grid-template-rows: repeat(7, 9px); grid-auto-columns: 9px; gap: 2.5px; }
+  /* 窄屏装不下 53 周，明确告诉访客这张图可以横向滑动 */
+  .gh-heatmap-head h3::after { content: " · 可左右滑动"; font-weight: 400; color: var(--text-3); }
   .post-row { flex-direction: column; gap: 6px; padding: 22px 16px; }
   .post-row time { width: auto; }
   .post-row .row-arrow { display: none; }
