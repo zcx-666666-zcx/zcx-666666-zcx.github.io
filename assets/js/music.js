@@ -93,6 +93,9 @@ const MUSIC_CONFIG = {
     </div>
     <div class="music-list js-music-list"></div>
   `;
+  // 面板是上面这行才写进 DOM 的，必须先渲染一次图标；
+  // 不能只依赖 main.js 里的 window.load 兜底（外部脚本挂起时 load 会一直不触发）。
+  if (window.lucide) window.lucide.createIcons();
 
   const $ = (sel) => player.querySelector(sel);
   const titleEl = $('.js-music-title');
@@ -179,7 +182,12 @@ const MUSIC_CONFIG = {
     const t = list[current];
     pendingSeek = seek;
     audio.src = resolveSrc(t.src);
-    audio.play().catch(() => {
+    audio.play().catch((err) => {
+      // 浏览器的自动播放拦截不是文件问题，别让访客以为歌坏了
+      if (err && err.name === 'NotAllowedError') {
+        artistEl.textContent = '点一下播放按钮开始';
+        return;
+      }
       // 文件缺失或格式不支持时给出提示
       titleEl.textContent = `${t.title}（加载失败）`;
       artistEl.textContent = '检查 assets/music/ 里的文件名是否对应';

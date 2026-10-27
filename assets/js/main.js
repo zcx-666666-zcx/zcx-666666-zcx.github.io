@@ -18,7 +18,7 @@ const isLightMode = () => document.documentElement.classList.contains('light-mod
 
 const LANG_COLORS = {
   JavaScript: '#f1e05a', TypeScript: '#3178c6', Java: '#b07219', Python: '#3572A5',
-  Vue: '#41b883', C: '#555555', 'C++': '#f34b7d', 'C#': '#178600', HTML: '#e34c26',
+  Vue: '#41b883', C: '#8b949e', 'C++': '#f34b7d', 'C#': '#178600', HTML: '#e34c26',
   CSS: '#563d7c', Svelte: '#ff3e00', Swift: '#F05138', Go: '#00ADD8', Shell: '#89e051',
 };
 const langColor = (lang) => LANG_COLORS[lang] || '#8b949e';
@@ -223,14 +223,14 @@ function observeReveal(el) { revealObserver.observe(el); }
 /* ---------- 2. 卡片聚光灯 ---------- */
 (function initCardGlow() {
   if (!FINE_POINTER) return;
-  document.querySelectorAll('.card').forEach((card) => {
-    card.addEventListener('mousemove', (e) => {
-      const r = card.getBoundingClientRect();
-      card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
-      card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
-    });
-  });
-
+  // 事件委托：GitHub 仓库卡片是异步插入的，逐个绑定会漏掉后来者
+  document.addEventListener('mousemove', (e) => {
+    const card = e.target.closest && e.target.closest('.card');
+    if (!card) return;
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+    card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+  }, { passive: true });
 })();
 
 /* ---------- 3. 滚动浮现动画 ---------- */
@@ -249,14 +249,27 @@ function observeReveal(el) { revealObserver.observe(el); }
   }
   const toggle = document.querySelector('.nav-toggle');
   if (toggle && nav) {
+    const close = (focusToggle = false) => {
+      nav.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', '打开菜单');
+      if (focusToggle) toggle.focus();
+    };
     toggle.addEventListener('click', () => {
       const open = nav.classList.toggle('open');
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? '关闭菜单' : '打开菜单');
     });
     nav.querySelectorAll('.nav-links a').forEach((a) =>
-      a.addEventListener('click', () => nav.classList.remove('open'))
+      a.addEventListener('click', () => close())
     );
+    // 移动端菜单：ESC 或点空白处收起，避免只能靠再点一次汉堡按钮
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.classList.contains('open')) close(true);
+    });
+    document.addEventListener('click', (e) => {
+      if (nav.classList.contains('open') && !nav.contains(e.target)) close();
+    });
   }
 })();
 
@@ -538,24 +551,34 @@ function daysSinceLaunch() {
 })();
 
 /* ---------- 14. 不蒜子访问量（浏览量 / 访客数） ----------
-   与 vow0328 等博客同款的免费计数服务；加载失败时自动隐藏数字，不影响页面。 */
+   与 vow0328 等博客同款的免费计数服务。该服务经常不稳定，所以先隐藏这两个数字，
+   确认服务真的写回了数字再显示；拿不到就整项移除，避免页面长期挂着「…」占位。 */
 (function initBusuanzi() {
-  if (!document.querySelector('.busuanzi-need')) return;
+  const items = document.querySelectorAll('.busuanzi-need');
+  if (!items.length) return;
+
+  items.forEach((el) => { el.style.visibility = 'hidden'; });
+  const hideAll = () => items.forEach((el) => { el.style.display = 'none'; });
+  const reveal = () => {
+    const pv = document.getElementById('busuanzi_value_site_pv');
+    const uv = document.getElementById('busuanzi_value_site_uv');
+    const ok = (pv && /\d/.test(pv.textContent)) || (uv && /\d/.test(uv.textContent));
+    if (ok) items.forEach((el) => { el.style.visibility = ''; });
+    return ok;
+  };
+
   const bz = document.createElement('script');
   bz.async = true;
   bz.src = 'https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js';
-  bz.addEventListener('error', hideBusuanzi);
+  bz.addEventListener('error', hideAll);
   document.body.appendChild(bz);
-  function hideBusuanzi() {
-    document.querySelectorAll('.busuanzi-need').forEach((el) => { el.style.display = 'none'; });
-  }
-  // 8 秒后仍无数据则优雅隐藏
-  setTimeout(() => {
-    const pv = document.getElementById('busuanzi_value_site_pv');
-    const ppv = document.getElementById('busuanzi_value_page_pv');
-    const target = pv || ppv;
-    if (target && !/\d/.test(target.textContent)) hideBusuanzi();
-  }, 8000);
+
+  // 服务脚本加载成功不代表取数成功，轮询 6 秒仍无数字就撤掉
+  let tries = 0;
+  const timer = setInterval(() => {
+    if (reveal()) { clearInterval(timer); return; }
+    if (++tries > 15) { clearInterval(timer); hideAll(); }
+  }, 400);
 })();
 
 /* 首次渲染图标；若 lucide 脚本晚到，在窗口加载完成后再补刷一次 */

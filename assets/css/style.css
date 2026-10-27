@@ -228,31 +228,33 @@ main, .site-footer { position: relative; z-index: var(--z-content); }
 /* 空状态：给「还没有内容」一个像样的形状。
    一行灰色小字会让整个区块看起来像加载失败，改用有图标、有层级的占位块。 */
 .empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  max-width: 560px;
-  padding: 34px 32px 36px;
+  /* 图标在左、文字在右：整行宽的虚线框不会显得空 */
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "icon title" "icon desc";
+  align-items: start;
+  gap: 8px 16px;
+  max-width: 100%;
+  padding: 30px 32px 32px;
   border: 1px dashed var(--glass-border);
   border-radius: var(--radius);
   background: linear-gradient(150deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
 }
 .empty-icon {
+  grid-area: icon;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 38px;
   height: 38px;
-  margin-bottom: 6px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--accent-a32);
   background: var(--accent-a08);
   color: var(--accent-hi);
 }
 .empty-icon .lucide { width: 18px; height: 18px; }
-.empty-title { font-size: 17px; font-weight: 600; letter-spacing: -0.012em; color: var(--text); }
-.empty-desc { font-size: 14.5px; line-height: 1.7; color: var(--text-2); text-wrap: pretty; }
+.empty-title { grid-area: title; font-size: 17px; font-weight: 600; letter-spacing: -0.012em; color: var(--text); }
+.empty-desc { grid-area: desc; font-size: 14.5px; line-height: 1.7; color: var(--text-2); text-wrap: pretty; max-width: 56ch; }
 html.light-mode .empty-state {
   background: linear-gradient(150deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.42));
 }
@@ -604,7 +606,16 @@ section { padding: clamp(78px, 8.5vw, 116px) 0 clamp(88px, 9.5vw, 132px); }
   color: var(--text-3);
 }
 .work-meta span { display: inline-flex; align-items: center; gap: 6px; }
-.lang-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+/* 语言圆点：GitHub 的语言色里有几个（尤其 C 的 #555）在深色卡片上几乎看不见，
+   统一补一圈半透明描边，保证任何底色下都有边界。 */
+.lang-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+html.light-mode .lang-dot { box-shadow: inset 0 0 0 1px rgba(20, 28, 56, 0.22); }
 
 .tags { display: flex; flex-wrap: wrap; gap: 7px; }
 .tags span {
@@ -818,6 +829,10 @@ html.light-mode .gh-legend i { background: rgba(28, 42, 88, 0.1); }
   grid-template-rows: repeat(7, 13px);
   grid-auto-columns: 13px;
   gap: 3.5px;
+  /* 宽屏时把剩余宽度均摊到列间距，热力图铺满卡片；
+     窄屏时 min-width 撑开，交给 .gh-heatmap 横向滚动 */
+  width: 100%;
+  justify-content: space-between;
   min-width: max-content;
 }
 /* 热力图加载骨架：保持 7 行网格形状 */
@@ -963,16 +978,26 @@ html.light-mode .gh-legend i { background: rgba(28, 42, 88, 0.1); }
   font-size: 13.5px;
   color: var(--text-2);
 }
-.resume-contacts span { display: inline-flex; align-items: center; gap: 7px; }
+.resume-contacts span,
+.resume-contacts a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: inherit;
+  text-decoration: none;
+}
+.resume-contacts a:hover { color: var(--accent-hi); }
+.resume-contacts a:hover i { color: var(--accent-hi); }
 .resume-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
 .resume-section { margin-top: 60px; }
 .resume-section > h2 {
   font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  color: var(--text-3);
+  /* 章节标题是简历的骨架，13px 在纸上和屏幕上都太弱，提到 15px 并加深一档 */
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-2);
   margin-bottom: 28px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--hairline);
@@ -1158,8 +1183,9 @@ html.light-mode .gh-legend i { background: rgba(28, 42, 88, 0.1); }
 .music-label {
   position: absolute;
   right: calc(var(--disc) + 14px);
-  top: 50%;
-  transform: translateY(-50%);
+  /* 对齐碟片垂直中心（播放器是 column 布局，top:50% 会落到碟片上方） */
+  bottom: calc(var(--disc) / 2);
+  transform: translateY(50%);
   display: flex;
   align-items: center;
   gap: 7px;
@@ -1178,7 +1204,7 @@ html.light-mode .gh-legend i { background: rgba(28, 42, 88, 0.1); }
   transition: opacity 0.3s ease, transform 0.3s var(--ease-spring), background 0.25s ease, color 0.25s ease;
 }
 .music-label .lucide { width: 14px; height: 14px; color: var(--accent-soft); }
-.music-label:hover { background: rgba(26, 30, 52, 0.92); color: var(--text); transform: translateY(-50%) scale(1.04); }
+.music-label:hover { background: rgba(26, 30, 52, 0.92); color: var(--text); transform: translateY(50%) scale(1.04); }
 .music-player.open .music-label { opacity: 0; pointer-events: none; }
 html.light-mode .music-label { background: rgba(255, 255, 255, 0.85); box-shadow: 0 8px 22px rgba(46, 66, 138, 0.16); }
 html.light-mode .music-label:hover { background: rgba(255, 255, 255, 1); }
@@ -1339,8 +1365,12 @@ html.light-mode .music-label .lucide { color: var(--accent); }
   height: 4px;
   border-radius: var(--radius-pill);
   background: linear-gradient(90deg, var(--accent), var(--accent-hi) var(--vol, 10%), rgba(255, 255, 255, 0.1) var(--vol, 10%));
-  outline: none;
   cursor: pointer;
+}
+/* 滑块不能用 outline:none 把焦点指示一并抹掉，改成自绘外环 */
+.music-volume input[type="range"]:focus-visible {
+  outline: 2px solid var(--accent-hi);
+  outline-offset: 4px;
 }
 .music-volume input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -1474,11 +1504,17 @@ html.light-mode .music-label .lucide { color: var(--accent); }
 
 /* ---------- 博客统计条 / 标签筛选 / 行内信息 ---------- */
 .site-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
-  gap: 14px;
+  /* 用 flex + fit-content：统计项少（文章数为 0、访问量服务不可用）时，
+     上下分隔线跟着内容收窄并居中，不会拉出一条空荡荡的横线。 */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px 56px;
+  width: fit-content;
+  min-width: min(360px, 100%);
+  max-width: 100%;
+  margin: 0 auto 28px;
   padding: 22px 0;
-  margin-bottom: 28px;
   border-top: 1px solid var(--hairline);
   border-bottom: 1px solid var(--hairline);
 }
@@ -1773,6 +1809,8 @@ html.light-mode .music-track.active { color: #0b57c2; }
 
   .hero { padding-top: calc(var(--nav-height) + 26px); }
   .hero-mark { max-width: 220px; }
+  /* 窄屏上邮箱 + 手机号挤在一行会贴在一起，改成竖排 */
+  .resume-contacts { flex-direction: column; gap: 8px; }
 
   .works-grid, .works-grid.grid-2 { grid-template-columns: 1fr; }
   .works-grid > .work-card:first-child { grid-column: auto; }
@@ -1821,7 +1859,7 @@ html.light-mode .music-track.active { color: #0b57c2; }
   .music-ctrl:hover { background: rgba(255, 255, 255, 0.055); color: var(--text-2); }
   .music-ctrl.main:hover { background: var(--accent); color: #fff; }
   .music-track:hover { background: none; color: var(--text-2); }
-  .music-label:hover { transform: translateY(-50%); }
+  .music-label:hover { transform: translateY(50%); }
   .gh-cell:hover { transform: none; box-shadow: none; }
   .nav-links a:hover { color: var(--text-2); background: none; }
   .footer-links a:hover { color: var(--text-3); }

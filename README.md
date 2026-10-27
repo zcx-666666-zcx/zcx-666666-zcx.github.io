@@ -16,8 +16,8 @@ personal-website/
 │   └── _template.html  ✏️ 新文章模板（复制它来写新文章）
 ├── assets/
 │   ├── css/style.css   全部样式（液态玻璃设计系统，带中文注释）
-│   ├── js/main.js      星空背景、自定义鼠标、GitHub 数据渲染
-│   ├── js/music.js     ✏️ 碟片音乐播放器（全站右下角，顶部播放列表可换歌）
+│   ├── js/main.js      星空背景、主题切换、GitHub 数据渲染
+│   ├── js/music.js     ✏️ 碟片音乐播放器（博客与文章页右下角）
 │   ├── music/          音乐文件（4 首，192kbps mp3，共约 14 MB）
 │   └── data/           GitHub 动态数据（本地为示例，部署时自动生成真实数据）
 └── generate_assets.py  重新生成示例音轨与示例数据的脚本
@@ -44,7 +44,7 @@ cd personal-website && python -m http.server 8000
 | 想改什么 | 去哪里改 |
 |---|---|
 | 名字 / 个人标语 | `index.html` 英雄区、导航栏 logo、各页页脚 |
-| 头像 | `index.html` 「关于我」区块，把 emoji 换成 `<img>` |
+| 头像 | `index.html` 「关于我」区块，把 `ZCX` 字母标记换成 `<img>` |
 | 邮箱 / GitHub 链接 | 每页导航栏、页脚、简历页 |
 | 简历内容 | `resume.html`（经历/项目/技能/教育全部是示例） |
 
@@ -72,9 +72,9 @@ cd personal-website && python -m http.server 8000
 
 博客页顶部有统计条：**文章数 / 总字数 / 站点运行天数 / 访问量 / 访客数**。
 
-- 文章数与总字数：每次部署时自动统计 `posts/` 里所有文章的真实字数（`make_site_stats.py` 同款逻辑），无需手动维护；
+- 文章数与总字数：每次部署时自动统计 `posts/` 里所有文章的真实字数（`make_site_stats.py` 同款逻辑），无需手动维护；一篇文章都没有时这两项会自动隐藏；
 - 运行天数：从 `assets/js/main.js` 里的 `SITE_LAUNCH`（上线日期）起算；
-- 访问量 / 访客数：由「不蒜子」免费计数服务提供，每篇文章页还会显示本页浏览量；服务偶尔不稳定，加载失败会自动隐藏数字。
+- 访问量 / 访客数：由「不蒜子」免费计数服务提供。该服务近年很不稳定（常整站不可达），拿不到数据时这两项会自动隐藏，不会在页面上留「…」占位。
 
 每篇文章可以打多个标签（在文章页 `post-meta` 和博客列表行里都能看到），博客页顶部的标签栏可以筛选；点击文章行里的小标签也能筛选。新文章记得在 `blog.html` 的行上加 `data-tags="标签1,标签2"` 和 `<div class="row-tags">`。
 
@@ -88,13 +88,15 @@ cd personal-website && python -m http.server 8000
 - 动态插入的内容（播放器、作品卡等）渲染后调用一次 `refreshIcons()`（定义在 `main.js`）；
 - CDN 加载失败时图标不显示，但功能按钮都带文字标签，不影响使用。
 
-## 💬 文章评论（giscus）
+## 💬 文章评论（giscus，当前未接入）
 
-文章页底部有基于 GitHub Discussions 的评论区（giscus）。读者用 GitHub 账号即可留言。
+评论区是**可选**的，现在 `posts/_template.html` 里没有 giscus 代码，文章页底部没有评论区。
+需要时按下面两步接入：
 
-> 首次启用前需要安装一次 giscus 应用：打开 <https://github.com/apps/giscus>，点 Install，选择 `zcx-666666-zcx.github.io` 这个仓库即可。装完评论立即生效，无需改代码。
+1. 打开 <https://github.com/apps/giscus> 安装应用，授权 `zcx-666666-zcx.github.io` 仓库；
+2. 到 <https://giscus.app> 生成配置，把 `<script src="https://giscus.app/client.js" ...>` 粘到模板正文末尾（`.comments` 容器里）。
 
-评论主题会跟随站点的亮 / 暗色模式自动切换。
+`main.js` 里的主题同步逻辑（`syncGiscus`）已经写好，评论区会跟随站点亮 / 暗色模式切换。
 
 ## 📊 访问统计（GoatCounter，可选）
 
@@ -135,8 +137,8 @@ cd personal-website && python -m http.server 8000
 ## ⚡ 后续可做的优化
 
 - **国内加速**：域名接入 Cloudflare（免费，境外 CDN，不用备案），弥补 GitHub Pages 在大陆的速度；
-- **评论系统**：在文章模板里加 [Giscus](https://giscus.app)（基于 GitHub Discussions，免费）；
-- **访问统计**：接入 [GoatCounter](https://www.goatcounter.com)（免费无追踪）或 Google Analytics；
-- **自动部署**：学一点 Git 后用命令行推送，或用 GitHub Actions。
+- **让 GitHub 动态保持新鲜**：现在的数据只在 push 时更新，长期不提交代码的话首页贡献数会停在最后一次部署。可以在 `deploy.yml` 加一条 `schedule`（例如每天一次）定时刷新；
+- **SEO 补全**：目前没有 `robots.txt` / `sitemap.xml`，搜索引擎收录靠自然抓取；站点只有 4 个页面，补两份文件成本很低；
+- **访问统计替代**：不蒜子不可用时访问量会消失，可换成 GoatCounter 或 Cloudflare Web Analytics。
 
 祝你发射顺利。🛰️
