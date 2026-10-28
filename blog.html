@@ -12,10 +12,10 @@
   <meta property="og:image" content="https://zcx-666666-zcx.github.io/assets/img/og-cover.png">
   <meta name="twitter:card" content="summary_large_image">
   <title>博客 · 张晨曦</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='26' fill='%233f8ce8'/%3E%3Cellipse cx='50' cy='53' rx='44' ry='11' fill='none' stroke='%23f2f3f7' stroke-width='5' opacity='.9' transform='rotate(-18 50 53)'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0b0d'/%3E%3Ccircle cx='50' cy='50' r='24' fill='%233f8ce8'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="./assets/css/style.css">
   <script>try{if(localStorage.getItem('site-theme')==='light')document.documentElement.classList.add('light-mode')}catch(e){}</script>
 </head>
@@ -23,14 +23,13 @@
 
   <a class="skip-link" href="#main">跳到主要内容</a>
 
-  <canvas id="stars" aria-hidden="true"></canvas>
-
   <header class="nav">
     <div class="nav-inner">
       <a class="nav-logo" href="./index.html">
         <svg width="18" height="18" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-          <circle cx="50" cy="50" r="26" fill="#3f8ce8"/>
-          <ellipse cx="50" cy="53" rx="44" ry="11" stroke="#f2f3f7" stroke-width="5" opacity=".85" transform="rotate(-18 50 53)"/>
+          <rect width="100" height="100" fill="#3f8ce8"/>
+          <rect x="26" y="26" width="48" height="48" fill="#0a0b0d"/>
+          <rect x="42" y="42" width="16" height="16" fill="#3f8ce8"/>
         </svg>
         张晨曦
       </a>
@@ -49,11 +48,18 @@
   </header>
 
   <main id="main">
-    <div class="container page-hero">
-      <p class="section-eyebrow">Blog</p>
-      <h1>博客</h1>
-      <p>关于嵌入式、太空、设计与技术的一点思考。慢慢写，不着急。</p>
-      <p class="blog-hint"><i data-lucide="disc-3"></i>右下角有一台小唱机。点一下碟片，边读边听。</p>
+    <div class="container page-hero blog-hero">
+      <div>
+        <h1 class="reveal">博客</h1>
+        <p class="reveal">关于嵌入式、太空、设计与技术的一点思考。慢慢写，不着急。</p>
+        <p class="blog-hint reveal"><i data-lucide="disc-3"></i>右下角有一台小唱机。点一下碟片，边读边听。</p>
+      </div>
+      <figure class="blog-hero-figure reveal">
+        <img src="./assets/img/componentes.jpg" width="1920" height="1321"
+             alt="电阻、电容、三极管与集成电路按类型摊平摆放，上方压着一把金属直尺"
+             fetchpriority="high" decoding="async">
+        <figcaption>元件按类型摊开，用尺子量尺寸。示意图，不是我的元件盒。</figcaption>
+      </figure>
     </div>
 
     <section class="section-tight">
@@ -68,7 +74,7 @@
         <div class="tag-filter js-tag-filter" aria-label="按标签筛选文章"></div>
         <div class="blog-list">
           <!-- ✏️ 新写文章后，复制一行 <a class="post-row"> 放到这里最上方，并删掉下面的空状态块 -->
-          <div class="empty-state">
+          <div class="empty-state reveal">
             <span class="empty-icon"><i data-lucide="pen-line"></i></span>
             <p class="empty-title">第一篇文章还在路上</p>
             <p class="empty-desc">站点刚开张，还没有发布内容。之后会在这里记录嵌入式与硬件项目里的实践。</p>

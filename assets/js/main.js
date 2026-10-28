@@ -1,19 +1,15 @@
 /* ============================================================
-   个人网站 · 交互脚本 v3
-   1. 深空背景（星空 + 极光，亮暗色自适应）
-   2. 卡片聚光灯
-   4. 滚动浮现动画
-   5. 导航栏 / 打印 / 年份
-   6. 亮暗色主题切换（记忆偏好，同步 giscus 评论主题）
-   7. GitHub 动态专区（部署时自动生成的数据）
-   9. 访问统计（GoatCounter，填入站点代码即启用）
+   个人网站 · 交互脚本 v4
+   1. 滚动浮现动画
+   2. 导航栏 / 打印 / 年份
+   3. 亮暗色主题切换（记忆偏好，同步 giscus 评论主题）
+   4. GitHub 动态专区（部署时自动生成的数据）
+   5. 访问统计（GoatCounter，填入站点代码即启用）
+   6. 博客统计：运行天数 / 字数 / 阅读时长 / 标签筛选
    ============================================================ */
-
-const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* Lucide 图标：动态插入内容后调用一次即可把 <i data-lucide> 渲染成 SVG */
 function refreshIcons() { if (window.lucide) window.lucide.createIcons(); }
-const FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
 const isLightMode = () => document.documentElement.classList.contains('light-mode');
 
 const LANG_COLORS = {
@@ -34,212 +30,13 @@ const revealObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 function observeReveal(el) { revealObserver.observe(el); }
 
-/* ---------- 1. 深空背景 ---------- */
-(function initBackground() {
-  // 注入极光光斑；背景保持克制，避免抢走内容注意力。
-  const auroraWrap = document.createElement('div');
-  auroraWrap.setAttribute('aria-hidden', 'true');
-  ['aurora-1', 'aurora-2', 'aurora-3'].forEach((cls) => {
-    const a = document.createElement('div');
-    a.className = `aurora ${cls}`;
-    auroraWrap.appendChild(a);
-  });
-  document.body.prepend(auroraWrap);
-
-  const canvas = document.getElementById('stars');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-
-  let stars = [];
-  let meteors = [];
-  let W = 0, H = 0, dpr = 1;
-  // 鼠标视差的缓动值
-  let mouseX = 0, mouseY = 0, easeX = 0, easeY = 0;
-
-  // 亮暗两套星色（暗色亮星，亮色深蓝暗星）
-  const STAR_COLORS = {
-    dark: ['#ffffff', '#cfe2ff', '#ffe3c4', '#d9d4ff', '#aee6ff'],
-    light: ['#7d97c9', '#6a85bd', '#8f9ed0', '#5f7ab5', '#9db3dd'],
-  };
-
-  // 三层景深：越近的星星越大、视差越明显
-  const LAYERS = [
-    { ratio: 0.5,  rMax: 0.9,  parallax: 0.012, driftMax: 0.012 },
-    { ratio: 0.32, rMax: 1.4,  parallax: 0.03,  driftMax: 0.03  },
-    { ratio: 0.18, rMax: 2.1,  parallax: 0.06,  driftMax: 0.055 },
-  ];
-
-  function createStars() {
-    const count = Math.min(260, Math.floor((W * H) / 7500));
-    stars = [];
-    for (const layer of LAYERS) {
-      const n = Math.floor(count * layer.ratio);
-      for (let i = 0; i < n; i++) {
-        stars.push({
-          x: Math.random() * W,
-          y: Math.random() * H,
-          r: Math.random() * layer.rMax + 0.25,
-          base: Math.random() * 0.5 + 0.3,
-          amp: Math.random() * 0.32,
-          speed: Math.random() * 0.0016 + 0.0004,
-          phase: Math.random() * Math.PI * 2,
-          drift: Math.random() * layer.driftMax + 0.008,
-          parallax: layer.parallax,
-          ci: (Math.random() * STAR_COLORS.dark.length) | 0,
-          sparkle: layer.rMax > 1.8 && Math.random() < 0.3,
-        });
-      }
-    }
-  }
-
-  function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = window.innerWidth;
-    H = window.innerHeight;
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
-    canvas.style.width = W + 'px';
-    canvas.style.height = H + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    createStars();
-    if (REDUCED_MOTION) drawStatic();
-  }
-
-  function spawnMeteor() {
-    meteors.push({
-      x: W * (0.3 + Math.random() * 0.7),
-      y: H * Math.random() * 0.4,
-      len: 110 + Math.random() * 130,
-      speed: 7 + Math.random() * 6,
-      life: 1,
-    });
-  }
-
-  function drawStar(s, t, scroll, light) {
-    // 鼠标 + 滚动双重视差
-    const px = (easeX - W / 2) * s.parallax;
-    const py = (easeY - H / 2) * s.parallax;
-    let x = (s.x + px) % W;
-    let y = (s.y + py - scroll * s.parallax * 4) % H;
-    if (x < 0) x += W;
-    if (y < 0) y += H;
-
-    let alpha = Math.max(0.08, s.base + Math.sin(t * s.speed + s.phase) * s.amp);
-    if (light) alpha *= 0.4;
-    ctx.globalAlpha = alpha;
-    ctx.fillStyle = (light ? STAR_COLORS.light : STAR_COLORS.dark)[s.ci];
-    ctx.beginPath();
-    ctx.arc(x, y, s.r, 0, Math.PI * 2);
-    ctx.fill();
-
-    // 亮星画十字光芒
-    if (s.sparkle) {
-      ctx.globalAlpha = alpha * 0.45;
-      ctx.strokeStyle = ctx.fillStyle;
-      ctx.lineWidth = 0.6;
-      const len = s.r * 4.5;
-      ctx.beginPath();
-      ctx.moveTo(x - len, y); ctx.lineTo(x + len, y);
-      ctx.moveTo(x, y - len); ctx.lineTo(x, y + len);
-      ctx.stroke();
-    }
-  }
-
-  function draw(t) {
-    ctx.clearRect(0, 0, W, H);
-    const scroll = window.scrollY || 0;
-    const light = isLightMode();
-    easeX += (mouseX - easeX) * 0.05;
-    easeY += (mouseY - easeY) * 0.05;
-
-    for (const s of stars) {
-      drawStar(s, t, scroll, light);
-      s.y += s.drift;
-      if (s.y > H + 2) { s.y = -2; s.x = Math.random() * W; }
-    }
-
-    // 流星：带渐隐尾迹
-    for (let i = meteors.length - 1; i >= 0; i--) {
-      const m = meteors[i];
-      const head = light ? '70,110,220' : '255,255,255';
-      const grad = ctx.createLinearGradient(m.x, m.y, m.x + m.len * 0.7, m.y - m.len * 0.7);
-      grad.addColorStop(0, `rgba(${head},${0.9 * m.life})`);
-      grad.addColorStop(1, `rgba(${head},0)`);
-      ctx.globalAlpha = 1;
-      ctx.strokeStyle = grad;
-      ctx.lineWidth = 1.6;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(m.x, m.y);
-      ctx.lineTo(m.x + m.len * 0.7, m.y - m.len * 0.7);
-      ctx.stroke();
-      // 亮头
-      ctx.globalAlpha = m.life;
-      ctx.fillStyle = light ? 'rgb(70,110,220)' : '#fff';
-      ctx.beginPath();
-      ctx.arc(m.x, m.y, 1.6, 0, Math.PI * 2);
-      ctx.fill();
-
-      m.x -= m.speed;
-      m.y += m.speed;
-      m.life -= 0.014;
-      if (m.life <= 0 || m.x < -m.len || m.y > H + m.len) meteors.splice(i, 1);
-    }
-
-    ctx.globalAlpha = 1;
-    if (!document.hidden) requestAnimationFrame(draw);
-  }
-
-  // 减少动态效果时只画一帧静态星空
-  function drawStatic() {
-    ctx.clearRect(0, 0, W, H);
-    for (const s of stars) {
-      ctx.globalAlpha = s.base;
-      ctx.fillStyle = (isLightMode() ? STAR_COLORS.light : STAR_COLORS.dark)[s.ci];
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-  }
-
-  window.addEventListener('resize', resize);
-  window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; }, { passive: true });
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && !REDUCED_MOTION) requestAnimationFrame(draw);
-  });
-
-  resize();
-  if (!REDUCED_MOTION) {
-    requestAnimationFrame(draw);
-    // 偶发流星为深空主题保留一点动态感。
-    setInterval(() => {
-      if (!document.hidden && meteors.length < 2 && Math.random() < 0.6) spawnMeteor();
-    }, 6500);
-    setTimeout(spawnMeteor, 1800);
-  }
-})();
-
-/* ---------- 2. 卡片聚光灯 ---------- */
-(function initCardGlow() {
-  if (!FINE_POINTER) return;
-  // 事件委托：GitHub 仓库卡片是异步插入的，逐个绑定会漏掉后来者
-  document.addEventListener('mousemove', (e) => {
-    const card = e.target.closest && e.target.closest('.card');
-    if (!card) return;
-    const r = card.getBoundingClientRect();
-    card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
-    card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
-  }, { passive: true });
-})();
-
-/* ---------- 3. 滚动浮现动画 ---------- */
+/* ---------- 1. 滚动浮现动画 ---------- */
 (function initReveal() {
   const els = document.querySelectorAll('.reveal');
   els.forEach((el) => observeReveal(el));
 })();
 
-/* ---------- 4. 导航栏：滚动加深 + 移动端菜单 ---------- */
+/* ---------- 2. 导航栏：滚动加深 + 移动端菜单 ---------- */
 (function initNav() {
   const nav = document.querySelector('.nav');
   if (nav) {
@@ -273,15 +70,15 @@ function observeReveal(el) { revealObserver.observe(el); }
   }
 })();
 
-/* ---------- 5. 简历页「打印 / 导出 PDF」 ---------- */
+/* ---------- 3. 简历页「打印 / 导出 PDF」 ---------- */
 const printBtn = document.querySelector('.print-btn');
 if (printBtn) printBtn.addEventListener('click', () => window.print());
 
-/* ---------- 7. 页脚年份 ---------- */
+/* ---------- 4. 页脚年份 ---------- */
 const yearEl = document.querySelector('.js-year');
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-/* ---------- 8. 亮暗色主题切换 ---------- */
+/* ---------- 5. 亮暗色主题切换 ---------- */
 (function initTheme() {
   const root = document.documentElement;
   const btn = document.querySelector('.theme-toggle');
@@ -313,7 +110,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
   }
 })();
 
-/* ---------- 9. GitHub 动态专区 ---------- */
+/* ---------- 6. GitHub 动态专区 ---------- */
 (function initGitHub() {
   const section = document.getElementById('github');
   if (!section) return;
@@ -371,26 +168,24 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     container.appendChild(frag);
   }
 
+  // 仓库渲染成列表行：一行一个，靠排版分栏，不是一格一格的卡片
   function renderRepos(container, repos) {
-    // 取 5 个：首张卡片在网格里跨两列，5 张正好填满 3 列 × 2 行，不留空格
     const sorted = [...repos]
       .sort((a, b) => (b.stargazers_count - a.stargazers_count) || (new Date(b.pushed_at) - new Date(a.pushed_at)))
       .slice(0, 5);
     container.innerHTML = '';
     sorted.forEach((repo) => {
       const a = document.createElement('a');
-      a.className = 'card work-card reveal';
+      a.className = 'repo-row reveal';
       a.href = repo.html_url;
       a.target = '_blank';
       a.rel = 'noopener';
       a.innerHTML = `
-        <div class="work-body">
-          <h3>${repo.name}</h3>
-          <p>${repo.description || '这个仓库还没有简介。'}</p>
-          <div class="work-meta">
-            ${repo.language ? `<span><i class="lang-dot" style="background:${langColor(repo.language)}"></i> ${repo.language}</span>` : ''}
-            <span><i data-lucide="star"></i>${repo.stargazers_count}</span>
-          </div>
+        <h3>${repo.name}</h3>
+        <p>${repo.description || '这个仓库还没有简介。'}</p>
+        <div class="repo-meta">
+          ${repo.language ? `<span><span class="lang-dot" style="background:${langColor(repo.language)}"></span>${repo.language}</span>` : ''}
+          <span class="repo-stars">${repo.stargazers_count} 星标</span>
         </div>`;
       container.appendChild(a);
     });
@@ -398,11 +193,11 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   load().then(({ profile, repos, contributions }) => {
     const hasAny = profile || repos || contributions;
-    const grid = section.querySelector('.js-gh-repos-grid');
+    const list = section.querySelector('.js-gh-repos-grid');
     if (!hasAny) {
       // 错误状态：说明发生了什么，并留一条能走的路
-      if (grid) {
-        grid.innerHTML = '<p class="gh-loading">暂时无法加载 GitHub 数据，可以直接去 <a href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">GitHub 主页</a>看看。</p>';
+      if (list) {
+        list.innerHTML = '<p class="gh-loading">暂时无法加载 GitHub 数据，可以直接去 <a href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">GitHub 主页</a>看看。</p>';
       }
       section.querySelectorAll('.gh-heatmap').forEach((el) => el.remove());
       return;
@@ -426,22 +221,22 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
       section.querySelectorAll('.gh-heatmap').forEach((el) => el.remove());
     }
 
-    // 仓库卡片
+    // 仓库列表
     if (repos && repos.length) {
-      if (grid) {
-        renderRepos(grid, repos);
-        grid.querySelectorAll('.reveal').forEach((el) => observeReveal(el));
+      if (list) {
+        renderRepos(list, repos);
+        list.querySelectorAll('.reveal').forEach((el) => observeReveal(el));
         refreshIcons();
       }
-    } else if (grid) {
+    } else if (list) {
       // 空状态：说清楚这里为什么是空的
-      grid.innerHTML = '<p class="gh-loading">这个账号下还没有公开仓库。</p>';
+      list.innerHTML = '<p class="gh-loading">这个账号下还没有公开仓库。</p>';
     }
     section.querySelectorAll('.gh-loading').forEach((el) => el.remove());
   });
 })();
 
-/* ---------- 10. 访问统计（GoatCounter） ----------
+/* ---------- 7. 访问统计（GoatCounter） ----------
    ✏️ 到 https://www.goatcounter.com 免费注册后，
    把分配的站点代码填到下面（例如 'zcx' 代表 zcx.goatcounter.com），保存即生效。 */
 const GOATCOUNTER_SITE = '';
@@ -453,7 +248,7 @@ if (GOATCOUNTER_SITE) {
   document.body.appendChild(gc);
 }
 
-/* ---------- 13. 博客统计：运行天数 / 字数 / 阅读时长 / 标签筛选 ---------- */
+/* ---------- 8. 博客统计：运行天数 / 字数 / 阅读时长 / 标签筛选 ---------- */
 const SITE_LAUNCH = '2026-08-30';   // 🚀 网站上线日期（运行天数从这天起算）
 const READ_SPEED = 400;             // 阅读速度（中文字 / 分钟）
 
@@ -550,20 +345,22 @@ function daysSinceLaunch() {
   });
 })();
 
-/* ---------- 14. 不蒜子访问量（浏览量 / 访客数） ----------
-   与 vow0328 等博客同款的免费计数服务。该服务经常不稳定，所以先隐藏这两个数字，
-   确认服务真的写回了数字再显示；拿不到就整项移除，避免页面长期挂着「…」占位。 */
+/* ---------- 9. 不蒜子访问量（浏览量 / 访客数） ----------
+   该服务经常不稳定，所以先隐藏这两个数字，确认服务真的写回了数字再显示；
+   拿不到就整项移除，避免页面长期挂着「…」占位。 */
 (function initBusuanzi() {
   const items = document.querySelectorAll('.busuanzi-need');
   if (!items.length) return;
 
-  items.forEach((el) => { el.style.visibility = 'hidden'; });
+  // 先用 display: none 移出渲染树，拿到数字再放回来。
+  // 用 visibility: hidden 会让这些文字「存在但不可见」，读屏与审计工具都会当成隐藏内容。
+  items.forEach((el) => { el.style.display = 'none'; });
   const hideAll = () => items.forEach((el) => { el.style.display = 'none'; });
   const reveal = () => {
     const pv = document.getElementById('busuanzi_value_site_pv');
     const uv = document.getElementById('busuanzi_value_site_uv');
     const ok = (pv && /\d/.test(pv.textContent)) || (uv && /\d/.test(uv.textContent));
-    if (ok) items.forEach((el) => { el.style.visibility = ''; });
+    if (ok) items.forEach((el) => { el.style.display = ''; });
     return ok;
   };
 

@@ -13,10 +13,10 @@
   <meta property="og:image" content="https://zcx-666666-zcx.github.io/assets/img/og-cover.png">
   <meta name="twitter:card" content="summary_large_image">
   <title>张晨曦 · 嵌入式开发 / 智能硬件</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='26' fill='%233f8ce8'/%3E%3Cellipse cx='50' cy='53' rx='44' ry='11' fill='none' stroke='%23f2f3f7' stroke-width='5' opacity='.9' transform='rotate(-18 50 53)'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0b0d'/%3E%3Ccircle cx='50' cy='50' r='24' fill='%233f8ce8'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="./assets/css/style.css">
   <script>try{if(localStorage.getItem('site-theme')==='light')document.documentElement.classList.add('light-mode')}catch(e){}</script>
 </head>
@@ -24,21 +24,20 @@
 
   <a class="skip-link" href="#main">跳到主要内容</a>
 
-  <!-- 星空背景画布 -->
-  <canvas id="stars" aria-hidden="true"></canvas>
-
-  <!-- 导航栏（悬浮玻璃胶囊） -->
+  <!-- 导航栏 -->
   <header class="nav">
     <div class="nav-inner">
       <a class="nav-logo" href="./index.html">
         <svg width="18" height="18" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-          <circle cx="50" cy="50" r="26" fill="#3f8ce8"/>
-          <ellipse cx="50" cy="53" rx="44" ry="11" stroke="#f2f3f7" stroke-width="5" opacity=".85" transform="rotate(-18 50 53)"/>
+          <rect width="100" height="100" fill="#3f8ce8"/>
+          <rect x="26" y="26" width="48" height="48" fill="#0a0b0d"/>
+          <rect x="42" y="42" width="16" height="16" fill="#3f8ce8"/>
         </svg>
         张晨曦
       </a>
       <nav class="nav-links">
-        <a href="./index.html" class="active">首页</a>        <a href="./blog.html">博客</a>
+        <a href="./index.html" class="active">首页</a>
+        <a href="./blog.html">博客</a>
         <a href="./resume.html">简历</a>
         <a href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">GitHub</a>
       </nav>
@@ -52,40 +51,23 @@
   </header>
 
   <main id="main">
-    <!-- 英雄区：左对齐主张 + 右侧轨道标记 -->
+    <!-- 英雄区：左身份，右一块真实电路板 -->
     <section class="hero">
       <div class="hero-copy">
-        <p class="hero-eyebrow reveal">Embedded Systems Explorer</p>
-        <h1 class="reveal">
-          想当<span class="gradient-text">数字游民</span>
-        </h1>
+        <h1 class="reveal">嵌入式软件工程师</h1>
         <p class="hero-sub reveal">
-          郑州轻工业大学智能物联专业在读，正在探索 MCU 与嵌入式 Linux 的边界；也用 AI、后端和小程序能力，让硬件项目真正可用。
+          我是张晨曦，郑州轻工业大学智能物联专业在读，2028 届。做 MCU 与嵌入式 Linux，也把 AI、后端和小程序接进硬件项目，让设备真正能用。
         </p>
         <div class="hero-actions reveal">
-          <a class="btn btn-primary" href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener"><i data-lucide="github"></i>在 GitHub 看项目</a>
+          <a class="btn btn-primary" href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener"><i data-lucide="github"></i>在 GitHub 看代码</a>
           <a class="btn btn-ghost" href="./resume.html">查看简历</a>
         </div>
       </div>
-      <div class="hero-mark" aria-hidden="true">
-        <svg viewBox="0 0 420 420" fill="none">
-          <defs>
-            <radialGradient id="hmPlanet" cx="34%" cy="30%" r="76%">
-              <stop offset="0%" stop-color="#8ec5ff"/>
-              <stop offset="52%" stop-color="#3f8ce8"/>
-              <stop offset="100%" stop-color="#16376b"/>
-            </radialGradient>
-          </defs>
-          <circle cx="210" cy="210" r="72" fill="url(#hmPlanet)"/>
-          <g class="orbit-slow">
-            <ellipse cx="210" cy="218" rx="188" ry="54" stroke="rgba(142,197,255,0.3)" stroke-width="1.2" transform="rotate(-18 210 218)"/>
-            <circle cx="24" cy="196" r="3.5" fill="#8ec5ff" opacity="0.85"/>
-          </g>
-          <g class="orbit-fast">
-            <ellipse cx="210" cy="218" rx="142" ry="40" stroke="rgba(142,197,255,0.16)" stroke-width="1" stroke-dasharray="2 7" transform="rotate(26 210 218)"/>
-          </g>
-        </svg>
-      </div>
+      <figure class="hero-figure reveal">
+        <img src="./assets/img/printed-circuit-board-9990.jpg" width="1920" height="1280"
+             alt="一块插满电容与集成电路的绿色电路板特写" fetchpriority="high" decoding="async">
+        <figcaption>一块工作中的电路板。示意图，不是我的项目照片。</figcaption>
+      </figure>
     </section>
 
     <!-- 关于我 -->
@@ -95,38 +77,58 @@
           <h2>关于我</h2>
         </div>
         <div class="about-grid">
-          <!-- ✏️ 想放真实照片？把下面 div 换成 <img class="about-avatar" src="assets/img/avatar.jpg" alt="我的照片"> -->
-          <div class="about-avatar reveal" role="img" aria-label="张晨曦的字母标记">
-            <span class="avatar-mono">ZCX</span>
-          </div>
+          <figure class="about-figure reveal">
+            <img src="./assets/img/unknown-mcu-2003-top-metal.jpg" width="1920" height="1575"
+                 alt="一颗单片机芯片的顶层金属布线显微照片，可见规整的存储阵列与外围驱动电路"
+                 loading="lazy" decoding="async">
+            <figcaption>一颗 MCU 的顶层金属布线。示意图，不是我的作品。</figcaption>
+          </figure>
           <div class="about-text reveal">
             <p>
-              你好！我是<strong>张晨曦</strong>，郑州轻工业大学智能物联专业在读。
-              我希望成为一名嵌入式开发工程师，喜欢从传感器、设备端程序到云端服务，把一个想法做成摸得着、能运行的产品。
+              你好，我是<strong>张晨曦</strong>，郑州轻工业大学智能物联专业在读。
+              我想成为一名嵌入式开发工程师：从传感器、设备端程序到云端服务，把一个想法做成摸得着、能运行的产品。
             </p>
             <p>
-              目前我还在 MCU 与嵌入式 Linux 两个方向之间持续实践：前者让我着迷于资源受限下的控制与实时性，后者则让我看到复杂设备系统的可能性。
-              AI 后端实习、微信小程序和竞赛项目，是我构建完整智能硬件体验的补充能力，而不是我想停留的终点。
+              目前在 MCU 与嵌入式 Linux 两个方向之间持续实践。前者让我着迷于资源受限下的控制与实时性，后者让我看到复杂设备系统的可能性。
+              AI 后端实习、微信小程序和竞赛项目，是构建完整智能硬件体验的补充能力，不是我想停留的终点。
             </p>
-            <ul class="chips">
-              <li><i data-lucide="microchip"></i>嵌入式系统</li>
-              <li><i data-lucide="bot"></i>智能硬件</li>
-              <li><i data-lucide="radio"></i>物联网</li>
-              <li><i data-lucide="code"></i>软硬件协同</li>
-              <li><i data-lucide="rocket"></i>太空</li>
-            </ul>
+            <dl class="skill-list">
+              <div>
+                <dt>语言</dt>
+                <dd>C、Python，正在补数据结构与计算机基础</dd>
+              </div>
+              <div>
+                <dt>MCU</dt>
+                <dd>STM32（Keil）、ESP32（ESP-IDF），外设驱动与通信协议</dd>
+              </div>
+              <div>
+                <dt>工具链</dt>
+                <dd>VSCode、Keil uVision、Git，逻辑分析仪与示波器</dd>
+              </div>
+              <div>
+                <dt>在学</dt>
+                <dd>RTOS、嵌入式 Linux、设备驱动</dd>
+              </div>
+            </dl>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- 全宽带：元件按类别摊开，像一张零件清单 -->
+    <figure class="photo-band">
+      <figcaption>元件按类型摊开，用尺子量尺寸。示意图，不是我的元件盒。</figcaption>
+      <img src="./assets/img/componentes.jpg" width="1920" height="1321"
+           alt="电阻、电容、三极管与集成电路按类型摊平摆放，上方压着一把金属直尺"
+           loading="lazy" decoding="async">
+    </figure>
+
     <!-- GitHub 动态专区 -->
     <section id="github">
       <div class="container">
         <div class="section-head">
-          <p class="section-eyebrow">GitHub</p>
-          <h2>持续实践</h2>
-          <p>这些数据记录我的代码足迹。项目成果比贡献数字更重要，但持续动手同样值得被看见。</p>
+          <h2>代码在这里</h2>
+          <p>下面的数据由构建脚本从 GitHub 抓取。项目本身比贡献数字更值得看。</p>
         </div>
         <div class="gh-stats">
           <div class="gh-stat reveal"><strong class="js-gh-contrib">—</strong><span>过去一年贡献</span></div>
@@ -134,19 +136,19 @@
           <div class="gh-stat reveal"><strong class="js-gh-stars">—</strong><span>获得 Star</span></div>
           <div class="gh-stat reveal"><strong class="js-gh-followers">—</strong><span>关注者</span></div>
         </div>
-        <div class="card gh-heatmap reveal">
+        <div class="gh-heatmap reveal">
           <div class="gh-heatmap-head">
             <h3 class="js-gh-total">正在加载贡献热力图…</h3>
-            <div class="gh-legend">少 <i></i><i class="gh-cell lv1" style="width:11px;height:11px"></i><i class="gh-cell lv2" style="width:11px;height:11px"></i><i class="gh-cell lv3" style="width:11px;height:11px"></i><i class="gh-cell lv4" style="width:11px;height:11px"></i> 多</div>
+            <div class="gh-legend">少 <i></i><i class="gh-cell lv1"></i><i class="gh-cell lv2"></i><i class="gh-cell lv3"></i><i class="gh-cell lv4"></i> 多</div>
           </div>
           <div class="gh-calendar js-gh-calendar is-loading"><p class="gh-loading">加载中…</p></div>
         </div>
-        <div class="works-grid js-gh-repos-grid">
-          <div class="card work-card repo-skeleton" aria-hidden="true"><i class="skeleton"></i><i class="skeleton"></i><i class="skeleton"></i><i class="skeleton"></i></div>
-          <div class="card work-card repo-skeleton" aria-hidden="true"><i class="skeleton"></i><i class="skeleton"></i><i class="skeleton"></i><i class="skeleton"></i></div>
-          <div class="card work-card repo-skeleton" aria-hidden="true"><i class="skeleton"></i><i class="skeleton"></i><i class="skeleton"></i><i class="skeleton"></i></div>
-          <div class="card work-card repo-skeleton" aria-hidden="true"><i class="skeleton"></i><i class="skeleton"></i><i class="skeleton"></i><i class="skeleton"></i></div>
-          <div class="card work-card repo-skeleton" aria-hidden="true"><i class="skeleton"></i><i class="skeleton"></i><i class="skeleton"></i><i class="skeleton"></i></div>
+        <div class="repo-list js-gh-repos-grid">
+          <div class="repo-skeleton" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="repo-skeleton" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="repo-skeleton" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="repo-skeleton" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="repo-skeleton" aria-hidden="true"><i></i><i></i><i></i></div>
         </div>
         <div class="section-more">
           <a class="arrow-link" href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">在 GitHub 上查看全部</a>
@@ -158,8 +160,8 @@
     <section>
       <div class="container">
         <div class="section-head">
-          <h2>最新文章</h2>
-          <p>关于嵌入式、太空、设计与技术的一点思考。</p>
+          <h2>最近写的</h2>
+          <p>嵌入式、太空、设计与技术，想到什么写什么。</p>
         </div>
         <div class="blog-list">
           <!-- ✏️ 新写文章后，在这里加一行链接，并删掉下面的空状态块 -->
@@ -178,33 +180,58 @@
     <!-- 联系 -->
     <section class="contact">
       <div class="container">
-        <div class="section-head">
-          <h2>保持联系</h2>
-          <p>无论是合作机会、问题交流，还是聊聊星空与火星，都欢迎来找我。</p>
-        </div>
-        <div class="contact-actions reveal">
-          <a class="btn btn-primary" href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener"><i data-lucide="github"></i>在 GitHub 找到我</a>
-          <a class="btn btn-ghost" href="mailto:jimkit666666@gmail.com"><i data-lucide="mail"></i>给我写信</a>
+        <div class="contact-grid">
+          <div>
+            <div class="section-head">
+              <h2>聊聊</h2>
+              <p>合作机会、技术问题，或者只是想聊聊星空与火星，都欢迎。</p>
+            </div>
+            <div class="contact-actions reveal">
+              <a class="btn btn-primary" href="mailto:jimkit666666@gmail.com"><i data-lucide="mail"></i>给我写信</a>
+              <a class="btn btn-ghost" href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener"><i data-lucide="github"></i>GitHub</a>
+            </div>
+            <ul class="contact-list">
+              <li>嵌入式实习与校招机会</li>
+              <li>硬件项目里的软件问题</li>
+              <li>STM32、ESP32、树莓派的踩坑交流</li>
+            </ul>
+          </div>
+          <figure class="contact-figure">
+            <img src="./assets/img/electronic-components-1.jpg" width="1920" height="2560"
+                 alt="几枚蓝色电解电容与橙色钽电容的微距特写" loading="lazy" decoding="async">
+            <figcaption>电容的丝印上印着耐压与容量。示意图，不是我的工作台。</figcaption>
+          </figure>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- 页脚 -->
+  <!-- 页脚：名字收尾 -->
   <footer class="site-footer">
-    <div class="container footer-inner">
-      <div class="footer-links">
-        <a href="./index.html">首页</a>        <a href="./blog.html">博客</a>
-        <a href="./resume.html">简历</a>
-        <a href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">GitHub</a>
+    <div class="container">
+      <p class="footer-name">张晨曦</p>
+      <div class="footer-inner">
+        <div class="footer-links">
+          <a href="./index.html">首页</a>
+          <a href="./blog.html">博客</a>
+          <a href="./resume.html">简历</a>
+          <a href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">GitHub</a>
+        </div>
+        <p class="footer-copy">
+          © <span class="js-year">2026</span> 张晨曦 · Made on Earth, for Mars · 已运行 <span class="js-run-days">…</span> 天
+        </p>
       </div>
-      <p class="footer-copy">
-        © <span class="js-year">2026</span> 张晨曦 · Made on Earth, for Mars · <i data-lucide="rocket"></i> 已运行 <span class="js-run-days">…</span> 天
+      <p class="footer-credit">
+        页面照片来自 Wikimedia Commons：
+        <a href="https://commons.wikimedia.org/wiki/File:Printed_Circuit_Board_9990.jpg" target="_blank" rel="noopener">Printed Circuit Board 9990</a>
+        by Ashley Pomeroy（CC BY 4.0）；
+        <a href="https://commons.wikimedia.org/wiki/File:Unknown_MCU_2003_Top_Metal.jpg" target="_blank" rel="noopener">Unknown MCU 2003 Top Metal</a>
+        by Azya52（CC0）。两张均为领域示意图，不是本人作品。
       </p>
     </div>
   </footer>
 
-    <!-- Lucide 开源图标库（https://lucide.dev，ISC 许可） -->
+  <!-- Lucide 开源图标库（https://lucide.dev，ISC 许可） -->
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js" onerror="var s=document.createElement('script');s.src='https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js';s.onload=function(){if(window.lucide)window.lucide.createIcons()};document.head.appendChild(s)"></script>
   <script src="./assets/js/main.js"></script>
 </body>
