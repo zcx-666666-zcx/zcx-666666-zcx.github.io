@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="一个 10 分钟的视频，第三方 AI 要跑两分钟。把这两分钟塞进 HTTP 请求里会死得很难看。记录视频查重接口为什么必须做成异步任务流。">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="张晨曦的个人网站">
+  <meta property="og:title" content="视频查重为什么不能同步返回 · 张晨曦的博客">
+  <meta property="og:description" content="一个 10 分钟的视频，第三方 AI 要跑两分钟。把这两分钟塞进 HTTP 请求里会死得很难看。">
+  <meta property="og:url" content="https://zcx-666666-zcx.github.io/posts/video-dedup-async.html">
+  <meta property="og:image" content="https://zcx-666666-zcx.github.io/assets/img/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>视频查重为什么不能同步返回 · 张晨曦的博客</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0b0d'/%3E%3Ccircle cx='50' cy='50' r='24' fill='%233f8ce8'/%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script>try{if(localStorage.getItem('site-theme')==='light')document.documentElement.classList.add('light-mode')}catch(e){}</script>
+</head>
+<body>
+
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="../index.html">
+        <svg width="18" height="18" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+          <rect width="100" height="100" fill="#3f8ce8"/>
+          <rect x="26" y="26" width="48" height="48" fill="#0a0b0d"/>
+          <rect x="42" y="42" width="16" height="16" fill="#3f8ce8"/>
+        </svg>
+        张晨曦
+      </a>
+      <nav class="nav-links">
+        <a href="../index.html">首页</a>        <a href="../blog.html" class="active">博客</a>
+        <a href="../resume.html">简历</a>
+        <a href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" type="button" aria-label="切换亮 / 暗色模式"><i data-lucide="sun" class="icon-sun"></i><i data-lucide="moon" class="icon-moon"></i><span class="toggle-label">主题</span></button>
+        <button class="nav-toggle" aria-label="打开菜单" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="container page-hero page-hero-flush">
+      <div class="post-wrap">
+        <a class="back-link" href="../blog.html">返回博客</a>
+        <h1 class="reveal">视频查重为什么不能同步返回</h1>
+        <div class="post-meta">
+          <time datetime="2026-10-29">2026 年 10 月 29 日</time>
+          <span class="tag">后端</span>
+          <span class="tag">AI 应用</span>
+          <span class="post-info"><span class="js-post-chars">…</span> · <span class="js-reading-time">…</span></span>
+          <span class="post-info busuanzi-need"><i data-lucide="eye"></i><span id="busuanzi_value_page_pv">…</span> 次浏览</span>
+        </div>
+
+        <article class="post-content">
+          <p>
+            给企业云盘做视频查重，第一版我写的是同步接口：传一个视频地址进来，调第三方 AI，拿到相似度，直接返回。写完自己跑了一遍，觉得挺对。
+          </p>
+          <p>
+            后来把线上真实素材接进来，10 分钟的视频，第三方要跑将近两分钟。这两分钟里，HTTP 连接一直挂着，前端转圈，网关在数秒。用户以为卡死了，刷新页面，又发一次请求，于是同一段视频被提交了两遍。
+          </p>
+          <p>
+            这不是"慢一点"的问题。同步调用第三方 AI，本质上是在拿自己的请求生命周期去赌别人的处理时长。
+          </p>
+
+          <h2>同步方案会死在哪</h2>
+          <p>
+            第一是超时。浏览器、Nginx、网关、负载均衡，每一层都有自己的超时。你没法保证这些配置在所有环境里都大于第三方的最长处理时间，而一旦超时，请求断了，AI 那边还在跑，钱照扣，结果没人收。
+          </p>
+          <p>
+            第二是重试。同步接口失败后，用户会重试，前端也会重试。对第三方来说，这就是重复计费；对自己的库来说，就是重复任务。查重这种本来就以"去重"为目的的功能，自己先制造重复，很难看。
+          </p>
+          <p>
+            第三是阻塞。同步接口会占着 Tomcat 的线程。十个大视频同时进来，线程池就满了，后面所有请求排队，包括跟 AI 毫无关系的登录和列表。一个功能拖垮整个服务，这在压力测试里很常见。
+          </p>
+
+          <h2>拆成两条异步链路</h2>
+          <p>
+            改法是把"发起"和"收结果"分开。上传完成的回调进来，接口只做三件事：把素材落库、创建两个任务（DNA 查重、TAG 打标）、立刻返回 <code>assetId</code> 和两个 <code>taskId</code>。整个过程不到 100 毫秒。
+          </p>
+          <p>
+            真正的 AI 处理交给第三方，异步跑。跑完之后，第三方回调我的接口，我再把结果写回去。请求的生命周期到这里就结束了，不再有任何一方需要"等"。
+          </p>
+          <pre><code>@PostMapping("/{id}/ai-callback/dna")
+public TaskSubmitResponse dnaCallback(
+        @PathVariable("id") String id,
+        @RequestHeader("X-Callback-Token") String callbackToken,
+        @Valid @RequestBody DnaCallbackRequest request) {
+    return demoService.handleDnaCallback(id, request, callbackToken);
+}</code></pre>
+          <p>
+            查重和打标拆成两个独立任务，是因为它们的耗时和失败率不一样。打标偶尔失败不该连累查重，查重跑完了也不必等打标。两条链路各自有状态，各自能重试。
+          </p>
+
+          <h2>回调接口要考虑的三件事</h2>
+          <p>
+            <strong>验签。</strong>回调地址是公开的，任何人构造一个 POST 就能往你的结果表里塞数据。所以每个回调都带 <code>X-Callback-Token</code>，对不上直接拒绝。这个 token 不是给用户看的，是给服务之间认身份的。
+          </p>
+          <p>
+            <strong>幂等。</strong>第三方会重推。同一个 <code>taskId</code> 的回调可能来两次、三次。写入前先按 <code>taskId</code> 查一次，已经成功的就直接返回，不要重复写结果表，也不要把状态从 SUCCEEDED 又推回 PENDING。
+          </p>
+          <p>
+            <strong>状态机。</strong>任务状态只有 <code>PENDING</code>、<code>SUCCEEDED</code>、<code>FAILED</code> 三个值，所有流转都显式写出来。不给"中间态"留口子，是因为一旦有中间态，排查问题时就说不清它到底卡在哪一步。
+          </p>
+
+          <h2>表怎么分</h2>
+          <p>
+            四张表，各管一件事：<code>cloud_video_asset</code> 存素材本身，<code>video_ai_task</code> 存任务与状态，<code>video_duplicate_result</code> 存查重结果，<code>video_ai_tag</code> 存标签。
+          </p>
+          <p>
+            把结果和任务分开，是因为它们的变化频率完全不同。任务表每来一个回调就更新一次状态，结果表只在成功时写一次。混在一张表里，字段会越来越多，最后没人敢动。
+          </p>
+          <p>
+            建表用 Flyway 管理，四个版本脚本，谁在什么环境跑过一眼能看出来。这件事看起来跟"设计"无关，但线上出问题时，能不能三分钟内确认表结构是对的，往往决定了要排查多久。
+          </p>
+
+          <h2>回头看</h2>
+          <p>
+            这套东西本身不复杂，复杂的是"同步"这个直觉太顺。调一个接口、拿一个结果，写起来最省事，直到第三方变慢、网络抖动、用户重试，三件事凑到一起，才发现问题不在代码里，在时序里。
+          </p>
+          <p>
+            现在我会先问一句：这个操作的最坏耗时是多少？只要它不受我控制，就不能放在我的请求里。
+          </p>
+        </article>
+
+        <div class="post-footer">
+          <a class="arrow-link" href="../blog.html">阅读更多文章</a>
+        </div>
+
+        <!-- 留言板：giscus 评论（基于 GitHub Discussions）。
+             首次生效前需要安装一次 giscus 应用：https://github.com/apps/giscus -->
+        <div class="comments">
+          <h2 class="comments-title">留言</h2>
+          <script src="https://giscus.app/client.js"
+            data-repo="zcx-666666-zcx/zcx-666666-zcx.github.io"
+            data-repo-id="R_kgDOUI373g"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOUI373s4DEhhr"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="top"
+            data-theme="dark"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async>
+          </script>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-links">
+        <a href="../index.html">首页</a>        <a href="../blog.html">博客</a>
+        <a href="../resume.html">简历</a>
+      </div>
+      <p class="footer-copy">© <span class="js-year">2026</span> 张晨曦 · Made on Earth, for Mars · 已运行 <span class="js-run-days">…</span> 天</p>
+    </div>
+  </footer>
+
+    <!-- Lucide 开源图标库（https://lucide.dev，ISC 许可） -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js" onerror="var s=document.createElement('script');s.src='https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js';s.onload=function(){if(window.lucide)window.lucide.createIcons()};document.head.appendChild(s)"></script>
+  <script src="../assets/js/main.js"></script>
+  <!-- 碟片音乐播放器（全站可用，不想在某页显示就删掉这一行） -->
+  <script src="../assets/js/music.js"></script>
+</body>
+</html>

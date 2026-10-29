@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="张晨曦的博客：嵌入式、智能硬件与技术的实践笔记。右下角还有一台可以边读边听的小唱机。">
+  <meta name="description" content="张晨曦的博客：AI 应用、后端与前端的实践笔记。右下角还有一台可以边读边听的小唱机。">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="张晨曦的个人网站">
   <meta property="og:title" content="博客 · 张晨曦">
-  <meta property="og:description" content="张晨曦的博客：嵌入式、智能硬件与技术的实践笔记。右下角还有一台可以边读边听的小唱机。">
+  <meta property="og:description" content="张晨曦的博客：AI 应用、后端与前端的实践笔记。右下角还有一台可以边读边听的小唱机。">
   <meta property="og:url" content="https://zcx-666666-zcx.github.io/blog.html">
   <meta property="og:image" content="https://zcx-666666-zcx.github.io/assets/img/og-cover.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -49,14 +49,14 @@
     <div class="container page-hero blog-hero">
       <div>
         <h1 class="reveal">博客</h1>
-        <p class="reveal">关于嵌入式、太空、设计与技术的一点思考。慢慢写，不着急。</p>
+        <p class="reveal">关于 AI 应用、后端、前端，以及工具与方法的一点思考。慢慢写，不着急。</p>
         <p class="blog-hint reveal"><i data-lucide="disc-3"></i>右下角有一台小唱机。点一下碟片，边读边听。</p>
       </div>
       <figure class="blog-hero-figure reveal">
-        <img src="./assets/img/componentes.jpg" width="1920" height="1321"
-             alt="电阻、电容、三极管与集成电路按类型摊平摆放，上方压着一把金属直尺"
+        <img src="./assets/img/code-screen.jpg" width="1600" height="1067"
+             alt="显示器上滚动的源代码，字符在景深之外逐渐虚化"
              fetchpriority="high" decoding="async">
-        <figcaption>元件按类型摊开，用尺子量尺寸。示意图，不是我的元件盒。</figcaption>
+        <figcaption>屏幕上的代码。示意图，不是我的项目截图。</figcaption>
       </figure>
     </div>
 
@@ -71,12 +71,18 @@
         </div>
         <div class="tag-filter js-tag-filter" aria-label="按标签筛选文章"></div>
         <div class="blog-list">
-          <!-- ✏️ 新写文章后，复制一行 <a class="post-row"> 放到这里最上方，并删掉下面的空状态块 -->
-          <div class="empty-state reveal">
-            <span class="empty-icon"><i data-lucide="pen-line"></i></span>
-            <p class="empty-title">第一篇文章还在路上</p>
-            <p class="empty-desc">站点刚开张，还没有发布内容。之后会在这里记录嵌入式与硬件项目里的实践。</p>
-          </div>
+          <a class="post-row reveal" href="./posts/video-dedup-async.html" data-tags="后端,AI 应用">
+            <time datetime="2026-10-29">2026.10.29</time>
+            <div>
+              <h3>视频查重为什么不能同步返回</h3>
+              <p>一个 10 分钟的视频，第三方 AI 要跑两分钟。把这两分钟塞进 HTTP 请求里，会死得很难看。</p>
+              <div class="row-meta">
+                <div class="row-tags"><span>后端</span><span>AI 应用</span></div>
+                <span class="row-chars js-row-chars"></span>
+              </div>
+            </div>
+            <span class="row-arrow">›</span>
+          </a>
         </div>
       </div>
     </section>
