@@ -858,7 +858,9 @@ html.light-mode .gh-legend i { background: rgba(28, 42, 88, 0.1); }
   background: var(--surface-1);
   transition: background 0.2s ease;
 }
-.skill-group:first-child { grid-column: span 2; }
+/* 首尾两组占满整行，中间的成对排列，四组时不会留空格 */
+.skill-group:first-child,
+.skill-group:last-child { grid-column: 1 / -1; }
 .skill-group:hover { background: var(--surface-2); }
 .skill-group h3 {
   display: flex;
@@ -1447,7 +1449,8 @@ html.light-mode .music-track.active { color: #0b57c2; }
   .gh-cell { width: 9px; height: 9px; }
   .gh-calendar { grid-template-rows: repeat(7, 9px); grid-auto-columns: 9px; gap: 2.5px; }
   .skill-groups { grid-template-columns: 1fr; }
-  .skill-group:first-child { grid-column: auto; }
+  .skill-group:first-child,
+  .skill-group:last-child { grid-column: auto; }
 }
 
 @media (max-width: 720px) {
