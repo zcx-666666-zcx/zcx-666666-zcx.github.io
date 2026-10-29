@@ -92,6 +92,32 @@
           <h2>项目经验</h2>
           <div class="timeline">
             <div class="timeline-item">
+              <time>2026.4 - 2026.5</time>
+              <h3>云盘视频素材去重与标签提取后端</h3>
+              <p class="tl-role">独立开发 · Java / Spring Boot / MySQL / 阿里云 Video DNA</p>
+              <p>把企业云盘里「视频查重 + 自动打标」做成一条异步任务流：上传只负责落库建任务，AI 处理交给第三方，结果通过回调写回。</p>
+              <ul>
+                <li>上传回调只创建 DNA 与 TAG 两个异步任务，长耗时处理不阻塞上传链路</li>
+                <li>接入阿里云 Video DNA 做重复检测、视频标签服务做场景与物体识别，回调接口用 X-Callback-Token 验签防伪造</li>
+                <li>设计 PENDING → SUCCEEDED / FAILED 的任务状态机，回调分别写入 video_duplicate_result 与 video_ai_tag 两张结果表</li>
+                <li>用 Flyway 管理 4 张业务表的建表与迁移，MySQL 真实落库而非内存 mock</li>
+                <li>提供上传回调、AI 状态、相似视频、标签查询、按相似度排序等 7 个 REST 接口，并写了可直接执行的联调脚本</li>
+                <li>源码：<a href="https://github.com/zcx-666666-zcx/videodna_demo" target="_blank" rel="noopener">github.com/zcx-666666-zcx/videodna_demo</a></li>
+              </ul>
+            </div>
+            <div class="timeline-item">
+              <time>2025.11 - 2025.12</time>
+              <h3>智能学习助手（后端 + 微信小程序）</h3>
+              <p class="tl-role">独立开发 · Spring Boot 3 / Spring AI / Ollama / MySQL</p>
+              <p>一套记录学习时长与坐姿数据的小程序，后端接本地大模型，不依赖云端 API。</p>
+              <ul>
+                <li>用 Spring Boot 3 + JPA 搭建用户、学习会话、坐姿数据三组模块，注册登录走 Spring Security Crypto 加密</li>
+                <li>引入 Spring AI 与 Ollama 接入本地模型，搭好对话接口的骨架，模型推理不出本机</li>
+                <li>微信小程序端完成登录、学习计时与数据展示，与后端接口联调</li>
+                <li>源码：<a href="https://github.com/zcx-666666-zcx/learning_helper" target="_blank" rel="noopener">github.com/zcx-666666-zcx/learning_helper</a></li>
+              </ul>
+            </div>
+            <div class="timeline-item">
               <time>2025.12 - 至今</time>
               <h3>智能适老陪伴机器人</h3>
               <p class="tl-role">核心软件开发者 · 中国大学生计算机设计大赛河南省级赛二等奖</p>
@@ -111,7 +137,6 @@
               <ul>
                 <li>完成需求拆解、页面设计、前后端数据交互与联调，一人跑通从界面到接口的全流程</li>
                 <li>用 Cursor、Claude Code、Codex 做 UI 快速还原与组件化开发，把重复编码压到最低</li>
-                <li>探索 Telegram API 等第三方生态的自动化用法</li>
                 <li>源码：<a href="https://github.com/zcx-666666-zcx/chuanzhibei" target="_blank" rel="noopener">github.com/zcx-666666-zcx/chuanzhibei</a></li>
               </ul>
             </div>
@@ -119,11 +144,7 @@
               <time>2025.6 - 2026.1</time>
               <h3>基于树莓派的智能视觉学习监测系统</h3>
               <p class="tl-role">核心软件开发者</p>
-              <p>一套跑在边缘设备上的安全监测系统，支持姿态检测与视频通话，前端、后端、算法三端打通。</p>
-              <ul>
-                <li>用 Python 在树莓派上部署计算机视觉算法，实现特定动作的实时识别</li>
-                <li>用 AI 工具辅助搭建 Spring Boot 后端与微信小程序前端，并完成三端联调</li>
-              </ul>
+              <p>跑在边缘设备上的安全监测系统：Python 在树莓派上部署计算机视觉算法做动作实时识别，Spring Boot 后端与微信小程序前端三端联调。</p>
             </div>
           </div>
         </div>
@@ -134,11 +155,11 @@
           <div class="skill-groups">
             <div class="skill-group">
               <h3>AI 应用与集成</h3>
-              <p>大模型 API 接入 · Prompt 设计与结构化输出 · AI 语音对话联调 · AI 内容生产链路（视频混剪 / 切片 / 素材智能匹配）· 第三方生态自动化</p>
+              <p>大模型 API 接入 · Spring AI / Ollama 本地模型 · Prompt 设计与结构化输出 · AI 语音对话联调 · AI 内容生产（视频查重 / 切片 / 素材智能匹配）</p>
             </div>
             <div class="skill-group">
               <h3>服务端与数据</h3>
-              <p>Java · Spring Boot · MyBatis · MySQL · Redis · REST API · 阿里云 OSS / Video DNA</p>
+              <p>Java · Spring Boot 3 · JPA / MyBatis · MySQL · Redis · Flyway · REST API · 异步任务与回调验签 · 阿里云 OSS / Video DNA</p>
             </div>
             <div class="skill-group">
               <h3>前端与端侧</h3>
