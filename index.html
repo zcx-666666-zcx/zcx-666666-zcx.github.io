@@ -4,19 +4,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="张晨曦的个人网站。郑州轻工业大学智能物联专业在读，专注 MCU 与嵌入式 Linux，这里记录我的项目、学习笔记与简历。">
+  <meta name="description" content="张晨曦的个人网站。郑州轻工业大学智能物联专业在读，2028 届。做过企业级 AI 产品的后端，也独立把两个商业站点推上线。">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="张晨曦的个人网站">
-  <meta property="og:title" content="张晨曦 · 嵌入式开发 / 智能硬件">
-  <meta property="og:description" content="张晨曦的个人网站。郑州轻工业大学智能物联专业在读，专注 MCU 与嵌入式 Linux，这里记录我的项目、学习笔记与简历。">
+  <meta property="og:title" content="张晨曦 · AI 应用开发 / 全栈">
+  <meta property="og:description" content="张晨曦的个人网站。郑州轻工业大学智能物联专业在读，2028 届。做过企业级 AI 产品的后端，也独立把两个商业站点推上线。">
   <meta property="og:url" content="https://zcx-666666-zcx.github.io/">
   <meta property="og:image" content="https://zcx-666666-zcx.github.io/assets/img/og-cover.png">
   <meta name="twitter:card" content="summary_large_image">
-  <title>张晨曦 · 嵌入式开发 / 智能硬件</title>
+  <title>张晨曦 · AI 应用开发 / 全栈</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0b0d'/%3E%3Ccircle cx='50' cy='50' r='24' fill='%233f8ce8'/%3E%3C/svg%3E">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap">
+
   <link rel="stylesheet" href="./assets/css/style.css">
   <script>try{if(localStorage.getItem('site-theme')==='light')document.documentElement.classList.add('light-mode')}catch(e){}</script>
 </head>
@@ -51,63 +49,122 @@
   </header>
 
   <main id="main">
-    <!-- 英雄区：左身份，右一块真实电路板 -->
+    <!-- 首屏：一句话说清做什么，数字压底 -->
     <section class="hero">
-      <div class="hero-copy">
-        <h1 class="reveal">嵌入式软件工程师</h1>
-        <p class="hero-sub reveal">
-          我是张晨曦，郑州轻工业大学智能物联专业在读，2028 届。做 MCU 与嵌入式 Linux，也把 AI、后端和小程序接进硬件项目，让设备真正能用。
-        </p>
-        <div class="hero-actions reveal">
-          <a class="btn btn-primary" href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener"><i data-lucide="github"></i>在 GitHub 看代码</a>
-          <a class="btn btn-ghost" href="./resume.html">查看简历</a>
+      <div class="container">
+        <h1 class="reveal">做能上线的<br>AI 应用</h1>
+        <div class="hero-foot">
+          <p class="hero-sub reveal">
+            我是张晨曦，郑州轻工业大学智能物联专业在读，2028 届。做过企业级 AI 产品的后端，也独立把两个商业站点推上线。
+          </p>
+          <div class="hero-actions reveal">
+            <a class="btn btn-primary" href="#work">看做过什么</a>
+            <a class="btn btn-ghost" href="./resume.html">简历</a>
+          </div>
         </div>
       </div>
-      <figure class="hero-figure reveal">
-        <img src="./assets/img/printed-circuit-board-9990.jpg" width="1920" height="1280"
-             alt="一块插满电容与集成电路的绿色电路板特写" fetchpriority="high" decoding="async">
-        <figcaption>一块工作中的电路板。示意图，不是我的项目照片。</figcaption>
-      </figure>
+      <div class="container">
+        <ul class="stat-strip reveal">
+          <li><strong>13+</strong><span>PR 提交</span></li>
+          <li><strong>2</strong><span>上线产品</span></li>
+          <li><strong>3</strong><span>段实习</span></li>
+          <li><strong>7</strong><span>项竞赛奖</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 作品：真实上线的站点 -->
+    <section id="work" class="work">
+      <div class="container">
+        <h2>上线的东西</h2>
+        <p class="section-lead">下面两个站点都真实在跑，有真实用户。我负责的部分写在每一项下面。</p>
+      </div>
+
+      <!-- 作品一：带截图 -->
+      <article class="work-item work-item--feature">
+        <div class="container work-item-inner">
+          <div class="work-copy">
+            <h3>托弗智能科技</h3>
+            <p class="work-role">网站开发与部署运营 · 2026.6 - 2026.9</p>
+            <p>
+              散状物料输送设备企业的官网。围绕产品线、制造能力、资质认证与现场视频重新整理素材，把原来零散的资料整合成一条能读下去的浏览路径。
+            </p>
+            <p class="work-tech">AI 编程工具辅助页面开发 · GitHub 工作流交付 · 站点部署与运营</p>
+            <a class="arrow-link" href="https://www.topflow.cn/" target="_blank" rel="noopener">打开 topflow.cn</a>
+          </div>
+          <figure class="work-figure">
+            <img src="./assets/img/work-topflow.jpg" width="1440" height="900"
+                 alt="托弗智能科技官网首屏：深色工业场景照片上压着「让散料输送，进入新的轨道」的大标题"
+                 loading="lazy" decoding="async">
+            <figcaption>官网首屏。截图于 2026 年 10 月。</figcaption>
+          </figure>
+        </div>
+      </article>
+
+      <!-- 作品二：视觉上图左文右，靠 order 翻转，DOM 顺序仍是文字在前 -->
+      <article class="work-item">
+        <div class="container work-item-inner work-item-inner--flip">
+          <div class="work-copy">
+            <h3>合聚 API</h3>
+            <p class="work-role">核心运营 · 2026.9 - 2026.11</p>
+            <p>
+              一个 API 中转服务：把 Codex、Claude、Gemini、DeepSeek 等模型的调用收敛到一个入口。我负责部署、日常可用性维护与用户侧支持，服务面向真实用户，已有实际付费使用。
+            </p>
+            <p>
+              左边这页文档是我写的：从身份凭证、令牌生成到 cURL 与 PowerShell 示例，把「怎么接进来」讲到用户不用再问人。
+            </p>
+            <p class="work-tech">服务部署与可用性维护 · 配置排查与问题定位 · 使用文档与公告撰写</p>
+            <a class="arrow-link" href="https://www.hejuapi.com/" target="_blank" rel="noopener">打开 hejuapi.com</a>
+          </div>
+          <figure class="work-figure">
+            <img src="./assets/img/work-heju.jpg" width="1440" height="900"
+                 alt="合聚 API 文档站的一页：左侧是快速开始、Claude Code、Codex、IDE 与 Agent 等章节，右侧讲如何通过 API 创建与管理密钥"
+                 loading="lazy" decoding="async">
+          </figure>
+        </div>
+      </article>
     </section>
 
     <!-- 关于我 -->
     <section>
       <div class="container">
-        <div class="section-head">
-          <h2>关于我</h2>
-        </div>
+        <h2>关于我</h2>
         <div class="about-grid">
-          <figure class="about-figure reveal">
+          <figure class="about-figure">
             <img src="./assets/img/unknown-mcu-2003-top-metal.jpg" width="1920" height="1575"
                  alt="一颗单片机芯片的顶层金属布线显微照片，可见规整的存储阵列与外围驱动电路"
                  loading="lazy" decoding="async">
             <figcaption>一颗 MCU 的顶层金属布线。示意图，不是我的作品。</figcaption>
           </figure>
-          <div class="about-text reveal">
-            <p>
-              你好，我是<strong>张晨曦</strong>，郑州轻工业大学智能物联专业在读。
-              我想成为一名嵌入式开发工程师：从传感器、设备端程序到云端服务，把一个想法做成摸得着、能运行的产品。
-            </p>
-            <p>
-              目前在 MCU 与嵌入式 Linux 两个方向之间持续实践。前者让我着迷于资源受限下的控制与实时性，后者让我看到复杂设备系统的可能性。
-              AI 后端实习、微信小程序和竞赛项目，是构建完整智能硬件体验的补充能力，不是我想停留的终点。
-            </p>
+          <div class="about-body">
+            <div class="about-text">
+              <p>
+                我是<strong>张晨曦</strong>，郑州轻工业大学智能物联专业在读。写 Java 和 Python，做后端与 AI 应用，也能把前端和部署一起接住。
+              </p>
+              <p>
+                两段网站开发与运营经历让我明白，一个东西能不能用，比它写得多漂亮更重要。现在主要在做 AI 应用的落地：把大模型接进真实业务，处理异步任务、回调、异常和边界。
+              </p>
+            </div>
             <dl class="skill-list">
               <div>
                 <dt>语言</dt>
-                <dd>C、Python，正在补数据结构与计算机基础</dd>
+                <dd>Java、Python、C</dd>
               </div>
               <div>
-                <dt>MCU</dt>
-                <dd>STM32（Keil）、ESP32（ESP-IDF），外设驱动与通信协议</dd>
+                <dt>AI 应用</dt>
+                <dd>大模型 API 接入、Spring AI / Ollama、Agent 工作流与工具调用</dd>
               </div>
               <div>
-                <dt>工具链</dt>
-                <dd>VSCode、Keil uVision、Git，逻辑分析仪与示波器</dd>
+                <dt>后端</dt>
+                <dd>Spring Boot、RuoYi、MyBatis、MySQL、Redis、REST API</dd>
               </div>
               <div>
-                <dt>在学</dt>
-                <dd>RTOS、嵌入式 Linux、设备驱动</dd>
+                <dt>前端</dt>
+                <dd>React、TypeScript、Vite、Vue、微信小程序</dd>
+              </div>
+              <div>
+                <dt>部署</dt>
+                <dd>Ubuntu、Nginx、Git / GitHub 工作流</dd>
               </div>
             </dl>
           </div>
@@ -115,7 +172,35 @@
       </div>
     </section>
 
-    <!-- 全宽带：元件按类别摊开，像一张零件清单 -->
+    <!-- 开源项目 -->
+    <section>
+      <div class="container">
+        <h2>开源</h2>
+        <p class="section-lead">写过的代码都在 GitHub 上，下面三个是能看出思路的。</p>
+        <div class="oss-list">
+          <a class="oss-row" href="https://github.com/zcx-666666-zcx/videodna_demo" target="_blank" rel="noopener">
+            <h3>videodna_demo</h3>
+            <p>云盘视频素材去重与标签提取后端。上传只建任务，AI 处理走异步回调，带状态机与验签。</p>
+            <span class="oss-lang">Java</span>
+          </a>
+          <a class="oss-row" href="https://github.com/zcx-666666-zcx/learning_helper" target="_blank" rel="noopener">
+            <h3>learning_helper</h3>
+            <p>智能学习助手。Spring Boot 3 + Spring AI + Ollama 本地模型，配一套微信小程序前端。</p>
+            <span class="oss-lang">Java</span>
+          </a>
+          <a class="oss-row" href="https://github.com/zcx-666666-zcx/chuanzhibei" target="_blank" rel="noopener">
+            <h3>chuanzhibei</h3>
+            <p>传智杯 AI 微信小程序源码，国赛二等奖作品，前端到接口一人完成。</p>
+            <span class="oss-lang">Vue</span>
+          </a>
+        </div>
+        <p class="section-more">
+          <a class="arrow-link" href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">全部仓库</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- 全宽带：元件按类别摊开 -->
     <figure class="photo-band">
       <figcaption>元件按类型摊开，用尺子量尺寸。示意图，不是我的元件盒。</figcaption>
       <img src="./assets/img/componentes.jpg" width="1920" height="1321"
@@ -126,10 +211,8 @@
     <!-- GitHub 动态专区 -->
     <section id="github">
       <div class="container">
-        <div class="section-head">
-          <h2>代码在这里</h2>
-          <p>下面的数据由构建脚本从 GitHub 抓取。项目本身比贡献数字更值得看。</p>
-        </div>
+        <h2>代码在这里</h2>
+        <p class="section-lead">下面的数据由构建脚本从 GitHub 抓取。项目本身比贡献数字更值得看。</p>
         <div class="gh-stats">
           <div class="gh-stat reveal"><strong class="js-gh-contrib">—</strong><span>过去一年贡献</span></div>
           <div class="gh-stat reveal"><strong class="js-gh-repos">—</strong><span>公开仓库</span></div>
@@ -150,19 +233,14 @@
           <div class="repo-skeleton" aria-hidden="true"><i></i><i></i><i></i></div>
           <div class="repo-skeleton" aria-hidden="true"><i></i><i></i><i></i></div>
         </div>
-        <div class="section-more">
-          <a class="arrow-link" href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener">在 GitHub 上查看全部</a>
-        </div>
       </div>
     </section>
 
     <!-- 最新博客 -->
     <section>
       <div class="container">
-        <div class="section-head">
-          <h2>最近写的</h2>
-          <p>嵌入式、太空、设计与技术，想到什么写什么。</p>
-        </div>
+        <h2>最近写的</h2>
+        <p class="section-lead">嵌入式、太空、设计与技术，想到什么写什么。</p>
         <div class="blog-list">
           <!-- ✏️ 新写文章后，在这里加一行链接，并删掉下面的空状态块 -->
           <div class="empty-state reveal">
@@ -171,9 +249,9 @@
             <p class="empty-desc">站点刚开张，还没有发布内容。之后会在这里记录嵌入式与硬件项目里的实践。</p>
           </div>
         </div>
-        <div class="section-more">
+        <p class="section-more">
           <a class="arrow-link" href="./blog.html">查看全部文章</a>
-        </div>
+        </p>
       </div>
     </section>
 
@@ -182,18 +260,16 @@
       <div class="container">
         <div class="contact-grid">
           <div>
-            <div class="section-head">
-              <h2>聊聊</h2>
-              <p>合作机会、技术问题，或者只是想聊聊星空与火星，都欢迎。</p>
-            </div>
+            <h2>聊聊</h2>
+            <p class="section-lead">实习机会、技术问题，或者只是想聊聊星空与火星，都欢迎。</p>
             <div class="contact-actions reveal">
               <a class="btn btn-primary" href="mailto:jimkit666666@gmail.com"><i data-lucide="mail"></i>给我写信</a>
               <a class="btn btn-ghost" href="https://github.com/zcx-666666-zcx" target="_blank" rel="noopener"><i data-lucide="github"></i>GitHub</a>
             </div>
             <ul class="contact-list">
-              <li>嵌入式实习与校招机会</li>
-              <li>硬件项目里的软件问题</li>
-              <li>STM32、ESP32、树莓派的踩坑交流</li>
+              <li>AI 应用 / 全栈方向实习与校招</li>
+              <li>后端接口、异步任务与部署问题</li>
+              <li>Spring、小程序、AI 工具链的踩坑交流</li>
             </ul>
           </div>
           <figure class="contact-figure">
@@ -226,7 +302,12 @@
         <a href="https://commons.wikimedia.org/wiki/File:Printed_Circuit_Board_9990.jpg" target="_blank" rel="noopener">Printed Circuit Board 9990</a>
         by Ashley Pomeroy（CC BY 4.0）；
         <a href="https://commons.wikimedia.org/wiki/File:Unknown_MCU_2003_Top_Metal.jpg" target="_blank" rel="noopener">Unknown MCU 2003 Top Metal</a>
-        by Azya52（CC0）。两张均为领域示意图，不是本人作品。
+        by Azya52（CC0）；
+        <a href="https://commons.wikimedia.org/wiki/File:Componentes.JPG" target="_blank" rel="noopener">Componentes</a>
+        by Kae（公共领域）；
+        <a href="https://commons.wikimedia.org/wiki/File:Electronic_components_1.jpg" target="_blank" rel="noopener">Electronic components 1</a>
+        by Colin.roussille（CC BY 4.0）。
+        均为领域示意图，不是本人作品。托弗智能科技与合聚 API 的截图来自其官网，用于说明我参与开发与运营的项目。
       </p>
     </div>
   </footer>

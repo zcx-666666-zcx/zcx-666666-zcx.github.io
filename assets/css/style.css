@@ -46,14 +46,16 @@
   --z-nav: 100;
   --z-overlay: 120;
 
-  /* 排版 */
-  --font: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  /* 排版：不引外部 web font。Google Fonts 在国内不可达，声明了也只会挂一个
+     永远加载不出来的请求，最后仍然回退到系统字体。直接用系统栈，中文与西文都是真字重。 */
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI",
           "PingFang SC", "HarmonyOS Sans SC", "MiSans", "Microsoft YaHei",
           "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
-  /* 五档字号 */
-  --fs-display: clamp(40px, 5.6vw, 76px);
+  /* 五档字号。display 取 8.2vw：规范统计里顶级站点的最大字号中位数是 8.4vw，
+     低于 6vw 会读成「没设计过的页面」。 */
+  --fs-display: clamp(50px, 8.2vw, 118px);
   --fs-h2: clamp(27px, 3.4vw, 38px);
   --fs-h3: 20px;
   --fs-body: 17px;
@@ -245,32 +247,34 @@ main, .site-footer { position: relative; z-index: var(--z-content); }
 .nav.open .nav-toggle span:nth-child(2) { opacity: 0; }
 .nav.open .nav-toggle span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
-/* ---------- 英雄区 ----------
-   左：身份与主张。右：一块真实电路板的照片。
-   不再用 100vh 撑满，避免首屏出现大片空场。 */
+/* ---------- 首屏 ----------
+   一行超大标题占满版面，说明与动作压在底部，数字带收尾。
+   首屏不放照片：字号本身就是主视觉，图片留给下面的作品区。 */
 .hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.86fr);
-  align-items: center;
-  gap: clamp(36px, 4.5vw, 64px);
-  max-width: 1160px;
-  margin: 0 auto;
-  padding: calc(var(--nav-height) + 56px) 28px 56px;
+  padding: calc(var(--nav-height) + 72px) 0 0;
 }
-.hero-copy { max-width: 640px; }
 .hero h1 {
   font-size: var(--fs-display);
-  line-height: 1.04;
-  font-weight: 600;
-  letter-spacing: -0.035em;
-  margin-bottom: 24px;
-  /* 中文标题按词断行，不要在「嵌入 / 式」这种词中间劈开 */
+  line-height: 0.96;
+  /* 700 而不是 600：Space Grotesk 只覆盖拉丁，中文回退到系统字体后
+     600 没有对应字重，浏览器会合成加粗，118px 下边缘会发毛。 */
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  margin-bottom: clamp(32px, 4vw, 52px);
+  /* 中文标题按词断行，不要在词中间劈开 */
   word-break: keep-all;
-  text-wrap: balance;
+}
+.hero-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(56px, 7vw, 96px);
 }
 .hero-sub {
-  max-width: 520px;
-  margin-bottom: 36px;
+  max-width: 440px;
+  margin: 0;
   font-size: 18px;
   line-height: 1.72;
   color: var(--text-2);
@@ -283,23 +287,27 @@ main, .site-footer { position: relative; z-index: var(--z-content); }
   align-items: center;
 }
 
-/* 首屏照片：真实电路板，去饱和后作为质感，不与强调色抢注意力 */
-.hero-figure { margin: 0; }
-.hero-figure img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  max-height: 440px;
-  object-fit: cover;
-  object-position: 42% 50%;
-  filter: grayscale(1) contrast(1.06) brightness(0.9);
+/* 数字带：首屏压底的一条，四个数字各占一格 */
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
 }
-.hero-figure figcaption {
-  margin-top: 12px;
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--text-3);
-  max-width: 42ch;
+.stat-strip li {
+  padding: 22px 24px 26px;
+  background: var(--surface-1);
 }
+.stat-strip strong {
+  display: block;
+  font-size: clamp(30px, 3.4vw, 46px);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  margin-bottom: 8px;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.stat-strip span { font-size: 13px; color: var(--text-3); }
 
 /* ---------- 按钮与文字链接 ---------- */
 .btn {
@@ -353,6 +361,87 @@ section { padding: clamp(64px, 7vw, 96px) 0 clamp(76px, 8vw, 116px); }
   text-wrap: pretty;
 }
 .section-more { margin-top: 40px; }
+
+/* 区块标题直接挂在 section 上，说明句用 .section-lead。
+   .resume-section > h2 有更高的特异性，不会被这条盖掉。 */
+main section h2 {
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  line-height: 1.14;
+  margin-bottom: 14px;
+  text-wrap: balance;
+}
+.section-lead {
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--text-2);
+  max-width: 620px;
+  margin-bottom: clamp(36px, 4vw, 52px);
+  text-wrap: pretty;
+}
+
+/* ---------- 作品：真实上线的站点 ---------- */
+.work { padding-bottom: clamp(76px, 8vw, 116px); }
+.work-item { padding: clamp(44px, 5vw, 72px) 0; }
+.work-item--feature { padding-top: clamp(24px, 3vw, 36px); }
+.work-item-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(32px, 4vw, 60px);
+  align-items: center;
+}
+.work-item-inner--flip {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+}
+/* DOM 里文字在前（图注不会落到标题上方被误判为小标签），视觉上把图翻到左边 */
+.work-item-inner--flip .work-figure { order: -1; }
+/* 这张截图本身是浅色界面，直接放会像一块白斑，压暗到与深色底同一个亮度区间 */
+.work-item-inner--flip .work-figure img { filter: grayscale(1) contrast(1.02) brightness(0.78); }
+.work-copy h3 {
+  font-size: clamp(26px, 3.2vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.032em;
+  line-height: 1.1;
+  margin-bottom: 10px;
+  text-wrap: balance;
+}
+.work-role { font-size: 14px; color: var(--accent-hi); margin-bottom: 20px; }
+.work-copy p {
+  font-size: 16.5px;
+  line-height: 1.7;
+  color: var(--text-2);
+  margin-bottom: 14px;
+  max-width: 54ch;
+  text-wrap: pretty;
+}
+.work-copy .work-tech { font-size: 13.5px; color: var(--text-3); margin-bottom: 22px; }
+.work-figure { margin: 0; }
+.work-figure img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top center;
+  filter: grayscale(1) contrast(1.04) brightness(0.96);
+}
+.work-figure figcaption { margin-top: 10px; font-size: 13px; color: var(--text-3); }
+
+/* ---------- 开源项目列表 ---------- */
+.oss-list { display: flex; flex-direction: column; gap: 2px; }
+.oss-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 2fr) auto;
+  gap: 8px 28px;
+  align-items: baseline;
+  padding: 22px 18px;
+  background: var(--surface-1);
+  transition: background 0.2s ease;
+}
+.oss-row:hover { background: var(--surface-2); }
+.oss-row:active { background: var(--surface-3); }
+.oss-row h3 { font-size: var(--fs-h3); font-weight: 600; letter-spacing: -0.015em; }
+.oss-row p { font-size: 15px; line-height: 1.6; color: var(--text-2); text-wrap: pretty; }
+.oss-lang { font-size: 13px; color: var(--text-3); white-space: nowrap; }
 
 /* 内页顶部。必须用 padding 长属性，写成简写会把 .container 的左右内边距清零。 */
 .page-hero { padding-top: calc(var(--nav-height) + 76px); padding-bottom: 40px; }
@@ -486,14 +575,14 @@ html.light-mode .lang-dot { box-shadow: inset 0 0 0 1px rgba(20, 28, 56, 0.22); 
 /* ---------- 首页：关于我 ---------- */
 .about-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 0.62fr) minmax(0, 1fr);
   gap: clamp(36px, 5vw, 72px);
   align-items: start;
 }
 .about-figure { margin: 0; }
 .about-figure img {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 5;
   object-fit: cover;
   filter: grayscale(1) contrast(1.05) brightness(0.92);
 }
@@ -685,7 +774,7 @@ html.light-mode .gh-legend i { background: rgba(28, 42, 88, 0.1); }
 .footer-links a { font-size: var(--fs-small); color: var(--text-3); transition: color 0.2s ease; }
 .footer-links a:hover { color: var(--text); }
 .footer-copy { font-size: var(--fs-small); color: var(--text-3); }
-.footer-credit { font-size: 13px; color: var(--text-3); margin-top: 22px; line-height: 1.6; }
+.footer-credit { font-size: 13px; color: var(--text-3); margin-top: 22px; line-height: 1.6; max-width: 88ch; }
 .footer-credit a { text-decoration: underline; text-underline-offset: 2px; }
 .footer-credit a:hover { color: var(--text-2); }
 
@@ -1236,9 +1325,11 @@ html.light-mode .music-label .lucide { color: var(--accent); }
 }
 .reveal.visible { opacity: 1; transform: none; }
 
-.hero-copy > .reveal:nth-child(1) { --d: 0.04s; }
-.hero-copy > .reveal:nth-child(2) { --d: 0.1s; }
-.hero-copy > .reveal:nth-child(3) { --d: 0.18s; }
+/* 首屏四块的入场顺序：标题 → 说明 → 动作 → 数字带 */
+.hero h1 { --d: 0s; }
+.hero-sub { --d: 0.08s; }
+.hero-actions { --d: 0.14s; }
+.stat-strip { --d: 0.2s; }
 .about-grid > .reveal:nth-child(2) { --d: 0.1s; }
 .gh-stats > .reveal:nth-child(2) { --d: 0.06s; }
 .gh-stats > .reveal:nth-child(3) { --d: 0.12s; }
@@ -1403,7 +1494,8 @@ html.light-mode .skeleton::after {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
 }
 html.light-mode .hero-figure img,
-html.light-mode .about-figure img {
+html.light-mode .about-figure img,
+html.light-mode .work-figure img {
   filter: grayscale(1) contrast(1.02) brightness(1.02);
 }
 html.light-mode .post-content p { color: #3a3d46; }
@@ -1426,15 +1518,12 @@ html.light-mode .music-track.active { color: #0b57c2; }
 
 /* ---------- 响应式 ---------- */
 @media (max-width: 960px) {
-  .hero {
-    grid-template-columns: 1fr;
-    gap: 40px;
-    padding-bottom: 72px;
-  }
-  .hero-copy { max-width: 640px; }
-  .hero-figure img { aspect-ratio: 16 / 10; }
+  .hero-foot { flex-direction: column; align-items: flex-start; gap: 28px; }
+  .stat-strip { grid-template-columns: repeat(2, 1fr); }
+  .work-item-inner,
+  .work-item-inner--flip { grid-template-columns: 1fr; gap: 28px; }
+  .oss-row { grid-template-columns: 1fr; gap: 6px; }
   .about-grid { grid-template-columns: 1fr; gap: 40px; }
-  /* 单列时图片不要吃满整屏，否则正文被推到下一屏 */
   .about-figure img { aspect-ratio: 3 / 2; max-height: 380px; }
   .contact-grid { grid-template-columns: 1fr; gap: 36px; }
   .contact-figure img { aspect-ratio: 3 / 2; max-height: 340px; }
@@ -1455,7 +1544,7 @@ html.light-mode .music-track.active { color: #0b57c2; }
 
 @media (max-width: 720px) {
   :root {
-    --fs-display: clamp(32px, 9vw, 44px);
+    --fs-display: clamp(38px, 12vw, 54px);
     --fs-h2: clamp(24px, 6.4vw, 30px);
   }
   .container { padding: 0 20px; }
@@ -1480,7 +1569,7 @@ html.light-mode .music-track.active { color: #0b57c2; }
   .nav-links a { font-size: 16px; padding: 13px 12px; }
   html.light-mode .nav-links { background: var(--surface-1); }
 
-  .hero { padding-top: calc(var(--nav-height) + 40px); }
+  .hero { padding-top: calc(var(--nav-height) + 44px); }
   .hero-sub { font-size: 16.5px; }
   .repo-row { grid-template-columns: 1fr; gap: 6px; padding: 20px 0; }
   .repo-meta { margin-top: 4px; }
