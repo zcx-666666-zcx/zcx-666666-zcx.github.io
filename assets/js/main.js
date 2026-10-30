@@ -8,6 +8,17 @@
    6. 博客统计：运行天数 / 字数 / 阅读时长 / 标签筛选
    ============================================================ */
 
+/* 防点击劫持：GitHub Pages 不能设 X-Frame-Options，也无法用 meta 设 frame-ancestors，
+   只能在前端兜一层。被别人的 iframe 套住时，把顶层窗口跳到本站；
+   跨域改不动父窗口，就把自己藏起来，让套壳页面变成一片空白。 */
+if (window.top !== window.self) {
+  try {
+    window.top.location = window.self.location;
+  } catch (e) {
+    document.documentElement.style.display = 'none';
+  }
+}
+
 /* Lucide 图标：动态插入内容后调用一次即可把 <i data-lucide> 渲染成 SVG */
 function refreshIcons() { if (window.lucide) window.lucide.createIcons(); }
 const isLightMode = () => document.documentElement.classList.contains('light-mode');
@@ -168,7 +179,21 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     container.appendChild(frag);
   }
 
-  // 仓库渲染成列表行：一行一个，靠排版分栏，不是一格一格的卡片
+  // 只接受 https 的 github.com 链接。仓库数据是外部输入，
+  // 直接赋给 a.href 时 javascript: 协议同样会执行。
+  function safeRepoUrl(raw) {
+    try {
+      const u = new URL(String(raw));
+      if (u.protocol === 'https:' && (u.hostname === 'github.com' || u.hostname.endsWith('.github.com'))) {
+        return u.href;
+      }
+    } catch (e) { /* 解析失败就走兜底 */ }
+    return 'https://github.com/zcx-666666-zcx';
+  }
+
+  // 仓库渲染成列表行：一行一个，靠排版分栏，不是一格一格的卡片。
+  // 名称与描述一律用 textContent 写入：这些字段来自 GitHub API，是任意文本，
+  // 用 innerHTML 拼进去的话，描述里写一个 <img onerror> 就能执行脚本。
   function renderRepos(container, repos) {
     const sorted = [...repos]
       .sort((a, b) => (b.stargazers_count - a.stargazers_count) || (new Date(b.pushed_at) - new Date(a.pushed_at)))
@@ -177,16 +202,32 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     sorted.forEach((repo) => {
       const a = document.createElement('a');
       a.className = 'repo-row reveal';
-      a.href = repo.html_url;
+      a.href = safeRepoUrl(repo.html_url);
       a.target = '_blank';
-      a.rel = 'noopener';
-      a.innerHTML = `
-        <h3>${repo.name}</h3>
-        <p>${repo.description || '这个仓库还没有简介。'}</p>
-        <div class="repo-meta">
-          ${repo.language ? `<span><span class="lang-dot" style="background:${langColor(repo.language)}"></span>${repo.language}</span>` : ''}
-          <span class="repo-stars">${repo.stargazers_count} 星标</span>
-        </div>`;
+      a.rel = 'noopener noreferrer';
+
+      const h3 = document.createElement('h3');
+      h3.textContent = String(repo.name || '');
+
+      const p = document.createElement('p');
+      p.textContent = String(repo.description || '这个仓库还没有简介。');
+
+      const meta = document.createElement('div');
+      meta.className = 'repo-meta';
+      if (repo.language) {
+        const wrap = document.createElement('span');
+        const dot = document.createElement('span');
+        dot.className = 'lang-dot';
+        dot.style.background = langColor(String(repo.language));
+        wrap.append(dot, document.createTextNode(String(repo.language)));
+        meta.appendChild(wrap);
+      }
+      const stars = document.createElement('span');
+      stars.className = 'repo-stars';
+      stars.textContent = `${Number(repo.stargazers_count) || 0} 星标`;
+      meta.appendChild(stars);
+
+      a.append(h3, p, meta);
       container.appendChild(a);
     });
   }

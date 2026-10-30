@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://giscus.app https://busuanzi.ibruce.info https://*.goatcounter.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://busuanzi.ibruce.info https://*.goatcounter.com; frame-src https://giscus.app; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="description" content="页面飘到了外太空。返回张晨曦的个人网站。">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="张晨曦的个人网站">
@@ -69,7 +70,9 @@
   </main>
 
     <!-- Lucide 开源图标库（https://lucide.dev，ISC 许可） -->
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js" onerror="var s=document.createElement('script');s.src='https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js';s.onload=function(){if(window.lucide)window.lucide.createIcons()};document.head.appendChild(s)"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"
+          integrity="sha384-hJnF5AwidE18GSWTAGHv3ByzzvfNZ1Tcx5y1UUV3WkauuMCEzBJBMSwSt/PUPXnM" crossorigin="anonymous"
+          onerror="var s=document.createElement('script');s.src='https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js';s.integrity='sha384-hJnF5AwidE18GSWTAGHv3ByzzvfNZ1Tcx5y1UUV3WkauuMCEzBJBMSwSt/PUPXnM';s.crossOrigin='anonymous';s.onload=function(){if(window.lucide)window.lucide.createIcons()};document.head.appendChild(s)"></script>
   <script src="./assets/js/main.js"></script>
 </body>
 </html>

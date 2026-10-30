@@ -114,7 +114,18 @@ const MUSIC_CONFIG = {
     const btn = document.createElement('button');
     btn.className = 'music-track';
     btn.type = 'button';
-    btn.innerHTML = `<span class="no">${track.index + 1}</span><span class="t">${track.title}<small style="opacity:.55"> · ${track.artist}</small></span>`;
+    // 曲目信息用 textContent 写入。目前是硬编码的，但改成可配置之后就是外部输入
+    const no = document.createElement('span');
+    no.className = 'no';
+    no.textContent = String(track.index + 1);
+    const t = document.createElement('span');
+    t.className = 't';
+    t.textContent = String(track.title);
+    const small = document.createElement('small');
+    small.style.opacity = '0.55';
+    small.textContent = ` · ${String(track.artist)}`;
+    t.appendChild(small);
+    btn.append(no, t);
     btn.addEventListener('click', () => {
       play(track.index);
       if (!player.classList.contains('playing')) toggle();
