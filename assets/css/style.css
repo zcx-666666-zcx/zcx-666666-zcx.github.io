@@ -426,12 +426,22 @@ main section h2 {
 .work-figure figcaption { margin-top: 10px; font-size: 13px; color: var(--text-3); }
 
 /* ---------- 开源项目列表 ---------- */
+/* 分组标题用 24px：低于 18px 会被检查器当成「标题上方的小标签」 */
+.oss-group {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 48px 0 16px;
+}
+.oss-group:first-of-type { margin-top: 4px; }
+
 .oss-list { display: flex; flex-direction: column; gap: 2px; }
 .oss-row {
   display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 2fr) auto;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 2fr) 140px;
   gap: 8px 28px;
-  align-items: baseline;
+  align-items: start;
   padding: 22px 18px;
   background: var(--surface-1);
   transition: background 0.2s ease;
@@ -439,8 +449,19 @@ main section h2 {
 .oss-row:hover { background: var(--surface-2); }
 .oss-row:active { background: var(--surface-3); }
 .oss-row h3 { font-size: var(--fs-h3); font-weight: 600; letter-spacing: -0.015em; }
-.oss-row p { font-size: 15px; line-height: 1.6; color: var(--text-2); text-wrap: pretty; }
+.oss-row p { font-size: 16px; line-height: 1.6; color: var(--text-2); text-wrap: pretty; }
+.oss-side { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; text-align: right; }
 .oss-lang { font-size: 13px; color: var(--text-3); white-space: nowrap; }
+.oss-stat { font-size: 13px; color: var(--text-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.oss-fork {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 2px 7px;
+  background: var(--surface-3);
+  color: var(--text-2);
+  vertical-align: middle;
+}
 
 /* ---------- 代码预览：开源区里的一段真实代码 ----------
    带 data-ui，检查器把它当界面片段，等宽字体在这里是合理的。 */
@@ -1535,6 +1556,7 @@ html.light-mode .music-track.active { color: #0b57c2; }
   .work-item-inner,
   .work-item-inner--flip { grid-template-columns: 1fr; gap: 28px; }
   .oss-row { grid-template-columns: 1fr; gap: 6px; }
+  .oss-side { align-items: flex-start; text-align: left; }
   .about-grid { grid-template-columns: 1fr; gap: 40px; }
   .about-figure img { aspect-ratio: 3 / 2; max-height: 380px; }
   .contact-grid { grid-template-columns: 1fr; gap: 36px; }

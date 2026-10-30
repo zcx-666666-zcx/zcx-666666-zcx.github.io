@@ -176,24 +176,96 @@
     <section>
       <div class="container">
         <h2>开源</h2>
-        <p class="section-lead">写过的代码都在 GitHub 上，下面三个是能看出思路的。</p>
+        <p class="section-lead">GitHub 上的仓库都在这儿，按能不能直接看出思路分组。star 与更新时间每天自动同步。</p>
+
+        <h3 class="oss-group">完整项目</h3>
         <div class="oss-list">
-          <a class="oss-row" href="https://github.com/zcx-666666-zcx/videodna_demo" target="_blank" rel="noopener">
+          <a class="oss-row" data-repo="WALL-E" href="https://github.com/zcx-666666-zcx/WALL-E" target="_blank" rel="noopener">
+            <h3>WALL-E</h3>
+            <p>居家陪护机器人，整个系统五个部分：树莓派端采集体征与环境数据，Spring Boot 管用户、设备与指令，Vue 控制台和微信小程序给家属用，另有一套 GPT-SoVITS 语音服务。围绕「监测 → 告警 → 联系 → 遥控」闭环。</p>
+            <div class="oss-side">
+              <span class="oss-lang">JavaScript</span>
+              <span class="oss-stat js-oss-stat"></span>
+            </div>
+          </a>
+          <a class="oss-row" data-repo="videodna_demo" href="https://github.com/zcx-666666-zcx/videodna_demo" target="_blank" rel="noopener">
             <h3>videodna_demo</h3>
-            <p>云盘视频素材去重与标签提取后端。上传只建任务，AI 处理走异步回调，带状态机与验签。</p>
-            <span class="oss-lang">Java</span>
+            <p>云盘视频素材去重与标签提取后端。上传只建任务，AI 处理走异步回调，带状态机与验签。MySQL 真实落库，Flyway 管四张表。</p>
+            <div class="oss-side">
+              <span class="oss-lang">Java</span>
+              <span class="oss-stat js-oss-stat"></span>
+            </div>
           </a>
-          <a class="oss-row" href="https://github.com/zcx-666666-zcx/learning_helper" target="_blank" rel="noopener">
+          <a class="oss-row" data-repo="learning_helper" href="https://github.com/zcx-666666-zcx/learning_helper" target="_blank" rel="noopener">
             <h3>learning_helper</h3>
-            <p>智能学习助手。Spring Boot 3 + Spring AI + Ollama 本地模型，配一套微信小程序前端。</p>
-            <span class="oss-lang">Java</span>
+            <p>智能学习助手。Spring Boot 3 + Spring AI + Ollama 本地模型，记录学习时长与坐姿数据，配一套微信小程序前端。</p>
+            <div class="oss-side">
+              <span class="oss-lang">Java</span>
+              <span class="oss-stat js-oss-stat"></span>
+            </div>
           </a>
-          <a class="oss-row" href="https://github.com/zcx-666666-zcx/chuanzhibei" target="_blank" rel="noopener">
+          <a class="oss-row" data-repo="chuanzhibei" href="https://github.com/zcx-666666-zcx/chuanzhibei" target="_blank" rel="noopener">
             <h3>chuanzhibei</h3>
-            <p>传智杯 AI 微信小程序源码，国赛二等奖作品，前端到接口一人完成。</p>
-            <span class="oss-lang">Vue</span>
+            <p>第八届传智杯 AI 微信小程序，国赛二等奖作品。需求拆解、页面、前后端联调一个人做完。</p>
+            <div class="oss-side">
+              <span class="oss-lang">Vue</span>
+              <span class="oss-stat js-oss-stat"></span>
+            </div>
+          </a>
+          <a class="oss-row" data-repo="chuansondai" href="https://github.com/zcx-666666-zcx/chuansondai" target="_blank" rel="noopener">
+            <h3>chuansondai</h3>
+            <p>传送带分拣。YOLOv5 负责视觉识别，MG90S 舵机执行分拣动作，C 写控制端，调试记录都留在提交信息里。</p>
+            <div class="oss-side">
+              <span class="oss-lang">C</span>
+              <span class="oss-stat js-oss-stat"></span>
+            </div>
           </a>
         </div>
+
+        <h3 class="oss-group">课程与实验</h3>
+        <div class="oss-list">
+          <a class="oss-row" data-repo="shiyanzuoye" href="https://github.com/zcx-666666-zcx/shiyanzuoye" target="_blank" rel="noopener">
+            <h3>shiyanzuoye</h3>
+            <p>STM32F103 物联网控制系统课程实验，从实验七到十：SPI 读写 W25Q16、I2C 与 RTC、ADC 采样、DMA 串口传输，每份都带报告。</p>
+            <div class="oss-side">
+              <span class="oss-lang">C</span>
+              <span class="oss-stat js-oss-stat"></span>
+            </div>
+          </a>
+        </div>
+
+        <h3 class="oss-group">fork 与参与</h3>
+        <div class="oss-list">
+          <a class="oss-row" data-repo="social-auto-upload" href="https://github.com/zcx-666666-zcx/social-auto-upload" target="_blank" rel="noopener">
+            <h3>social-auto-upload <span class="oss-fork">fork</span></h3>
+            <p>自动化上传视频与图文到抖音、B 站、小红书、YouTube 等十余个平台。上游已有 9k star，我拿它研究浏览器自动化与多平台发布流程。</p>
+            <div class="oss-side">
+              <span class="oss-lang">Python</span>
+              <span class="oss-stat js-oss-stat"></span>
+            </div>
+          </a>
+          <a class="oss-row" data-repo="ZZULI.dev" href="https://github.com/zcx-666666-zcx/ZZULI.dev" target="_blank" rel="noopener">
+            <h3>ZZULI.dev <span class="oss-fork">fork</span></h3>
+            <p>郑州轻工业大学开发者校友名录，收集大家在做什么。Svelte 写的社区项目。</p>
+            <div class="oss-side">
+              <span class="oss-lang">Svelte</span>
+              <span class="oss-stat js-oss-stat"></span>
+            </div>
+          </a>
+        </div>
+
+        <h3 class="oss-group">本站</h3>
+        <div class="oss-list">
+          <a class="oss-row" data-repo="zcx-666666-zcx.github.io" href="https://github.com/zcx-666666-zcx/zcx-666666-zcx.github.io" target="_blank" rel="noopener">
+            <h3>zcx-666666-zcx.github.io</h3>
+            <p>你正在看的这个站点。纯静态、零构建，push 到 main 后由 GitHub Actions 同步到 Pages。</p>
+            <div class="oss-side">
+              <span class="oss-lang">HTML</span>
+              <span class="oss-stat js-oss-stat"></span>
+            </div>
+          </a>
+        </div>
+
         <figure class="code-preview" data-ui>
           <p class="code-preview-bar">videodna_demo · VideoAiController.java</p>
           <pre><code>@RestController

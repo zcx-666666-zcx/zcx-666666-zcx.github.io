@@ -221,6 +221,21 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
       section.querySelectorAll('.gh-heatmap').forEach((el) => el.remove());
     }
 
+    // 开源区：给每一行补上 star 数与最近更新时间（介绍文案是手写的，这两个数字跟着数据走）
+    if (repos) {
+      document.querySelectorAll('.oss-row[data-repo]').forEach((row) => {
+        const slot = row.querySelector('.js-oss-stat');
+        if (!slot) return;
+        const name = row.dataset.repo.toLowerCase();
+        const repo = repos.find((r) => r.name.toLowerCase() === name);
+        if (!repo) { slot.textContent = ''; return; }
+        const parts = [];
+        if (repo.stargazers_count > 0) parts.push(`${repo.stargazers_count} star`);
+        if (repo.pushed_at) parts.push(`${repo.pushed_at.slice(0, 7).replace('-', '.')} 更新`);
+        slot.textContent = parts.join(' · ');
+      });
+    }
+
     // 仓库列表
     if (repos && repos.length) {
       if (list) {
