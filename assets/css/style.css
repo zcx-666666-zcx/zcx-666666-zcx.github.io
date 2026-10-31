@@ -1614,8 +1614,10 @@ html.light-mode .music-track.active { color: #0b57c2; }
   .post-row time { width: auto; }
   .post-row .row-arrow { display: none; }
   .footer-inner { flex-direction: column; align-items: flex-start; }
-  .music-player { right: 16px; bottom: 16px; --disc: 60px; }
+  .music-player { right: 14px; bottom: 14px; --disc: 54px; }
   .music-panel { width: min(300px, calc(100vw - 40px)); }
+  /* 移动端只留唱片本身，隐藏「音乐」标签：整块浮层会压住正文标题 */
+  .music-label { display: none; }
   .skill-list > div { grid-template-columns: 96px minmax(0, 1fr); }
 }
 
