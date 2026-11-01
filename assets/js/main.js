@@ -110,8 +110,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     syncGiscus(light);
   }
 
-  let light = false;
-  try { light = localStorage.getItem('site-theme') === 'light'; } catch (e) {}
+  apply(root.classList.contains('light-mode'));
   if (btn) {
     btn.addEventListener('click', () => {
       const next = !root.classList.contains('light-mode');

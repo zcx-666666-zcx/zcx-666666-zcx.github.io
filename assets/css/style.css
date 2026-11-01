@@ -13,26 +13,27 @@
 /* ---------- 设计变量 ---------- */
 :root {
   /* 底色：中性近黑，不带蓝调，让照片和强调色自己站出来 */
-  --bg: #0a0b0d;
-  --surface-1: #16181d;
-  --surface-2: #1f222a;
-  --surface-3: #2a2e37;
+  --bg: #181a1b;
+  --surface-1: #222526;
+  --surface-2: #303435;
+  --surface-3: #3b4040;
 
-  --text: #f2f3f5;
-  --text-2: #a8acb4;
-  --text-3: #7b8089;          /* 对 #0a0b0d 约 5.1:1，满足 WCAG AA */
+  --text: #f1f1ed;
+  --text-2: #c0c5c2;
+  --text-3: #a2aaa6;
 
   /* 唯一的强调色 */
   --accent: #3f8ce8;
-  --accent-hi: #79b8ff;
-  --accent-soft: #8ec5ff;
+  --accent-hi: #91c4ec;
+  --accent-soft: #bedcf3;
   --accent-a08: rgba(63, 140, 232, 0.08);
   --accent-a16: rgba(63, 140, 232, 0.16);
   --accent-a32: rgba(63, 140, 232, 0.32);
   --accent-a50: rgba(63, 140, 232, 0.5);
 
   /* 分隔：只用于表格与真正的分界，不用来做卡片描边 */
-  --rule: rgba(255, 255, 255, 0.1);
+  --rule: rgba(230, 239, 235, 0.14);
+  color-scheme: dark;
 
   /* 圆角：统一直角。圆形控件单独用 50% */
   --radius: 0;
@@ -196,6 +197,7 @@ main, .site-footer { position: relative; z-index: var(--z-content); }
   background: var(--bg);
   transition: background 0.3s ease;
 }
+html:not(.light-mode) .nav { border-bottom: 1px solid var(--rule); }
 .nav.scrolled { background: var(--surface-1); }
 .nav-inner {
   width: 100%;
@@ -297,6 +299,7 @@ main, .site-footer { position: relative; z-index: var(--z-content); }
   padding: 22px 24px 26px;
   background: var(--surface-1);
 }
+html:not(.light-mode) .stat-strip li { border-top: 2px solid var(--accent-a32); }
 .stat-strip strong {
   display: block;
   font-size: clamp(30px, 3.4vw, 46px);
@@ -396,8 +399,6 @@ main section h2 {
 }
 /* DOM 里文字在前（图注不会落到标题上方被误判为小标签），视觉上把图翻到左边 */
 .work-item-inner--flip .work-figure { order: -1; }
-/* 这张截图本身是浅色界面，直接放会像一块白斑，压暗到与深色底同一个亮度区间 */
-.work-item-inner--flip .work-figure img { }
 .work-copy h3 {
   font-size: clamp(26px, 3.2vw, 40px);
   font-weight: 600;
@@ -422,6 +423,8 @@ main section h2 {
   aspect-ratio: 16 / 10;
   object-fit: cover;
   object-position: top center;
+  outline: 1px solid var(--rule);
+  outline-offset: -1px;
 }
 .work-figure figcaption { margin-top: 10px; font-size: 13px; color: var(--text-3); }
 
@@ -1520,10 +1523,6 @@ html.light-mode .nav-links a.active { background: var(--surface-2); }
 html.light-mode .skeleton { background: var(--surface-2); }
 html.light-mode .skeleton::after {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
-}
-html.light-mode .hero-figure img,
-html.light-mode .about-figure img,
-html.light-mode .work-figure img {
 }
 html.light-mode .post-content p { color: #3a3d46; }
 html.light-mode .post-content ul li { color: #3a3d46; }
